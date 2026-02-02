@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRIONEL Quest Platform</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles & Config -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .quest-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .gold-gradient { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
+        .silver-gradient { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); }
+        .bronze-gradient { background: linear-gradient(135deg, #d97706 0%, #92400e 100%); }
+        
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        /* Cat Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        
+        @keyframes shake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+        .pulse-ring { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+
+        .loading-dot { animation: bounce 1.4s infinite ease-in-out both; }
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        /* Modal Backdrop */
+        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
+        
+        /* Game Specifics */
+        .game-ball { transition: transform 0.1s; }
+        
+        /* PAW CURSOR for Mini Game */
+        .cursor-paw {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23fbbf24" stroke="%23b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5v2a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"></path><path d="M12 11.5a2.5 2.5 0 0 0-2.5 2.5v.5a2.5 2.5 0 0 0 5 0v-.5a2.5 2.5 0 0 0-2.5-2.5z"></path><path d="M4.5 9.5a2.5 2.5 0 0 0-2.5 2.5v.5a2.5 2.5 0 0 0 5 0v-.5a2.5 2.5 0 0 0-2.5-2.5z"></path><path d="M19.5 9.5a2.5 2.5 0 0 0-2.5 2.5v.5a2.5 2.5 0 0 0 5 0v-.5a2.5 2.5 0 0 0-2.5-2.5z"></path><path d="M8.5 14.5a3.5 3.5 0 0 0-3.5 3.5v.5a3.5 3.5 0 0 0 7 0v-.5a3.5 3.5 0 0 0-3.5-3.5z"></path><path d="M15.5 14.5a3.5 3.5 0 0 0-3.5 3.5v.5a3.5 3.5 0 0 0 7 0v-.5a3.5 3.5 0 0 0-3.5-3.5z"></path></svg>') 16 16, auto;
+        }
+        
+        /* Confetti Animation */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        .confetti { position: fixed; width: 10px; height: 10px; animation: confetti-fall 3s linear forwards; pointer-events: none; z-index: 9999; }
+        
+        /* NEW: Cat Visual Effects */
+        .grayscale-light { filter: grayscale(0.7) opacity(0.9); transition: all 0.5s; }
+        .grayscale-heavy { filter: grayscale(1) opacity(0.6); transition: all 0.5s; }
+
+        /* GROWTH TREE ANIMATIONS */
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 8px #FFD700); }
+            50% { filter: drop-shadow(0 0 20px #FFD700); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+        @keyframes tree-sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+        .animate-tree-sway { animation: tree-sway 4s ease-in-out infinite; }
+
+        @keyframes golden-glow {
+            0%, 100% { filter: drop-shadow(0 0 15px #FFD700) brightness(1); }
+            50% { filter: drop-shadow(0 0 30px #FFD700) brightness(1.1); }
+        }
+        .animate-golden { animation: golden-glow 2s ease-in-out infinite; }
+
+        @keyframes rain-fall {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(3px); }
+        }
+        .animate-rain { animation: rain-fall 1s ease-in-out infinite; }
+
+        @keyframes shake-slow {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+        .animate-shake-slow { animation: shake-slow 0.5s ease-in-out infinite; }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .animate-sparkle { animation: sparkle 1.5s ease-in-out infinite; }
+
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        .animate-rainbow { animation: rainbow 3s linear infinite; }
+
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 3s ease-in-out infinite; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { emerald: { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' } }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 md:px-8 z-20 shadow-sm flex-shrink-0">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 quest-gradient rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-100">
+                B
+            </div>
+            <span class="font-black text-lg tracking-tight text-slate-900">BRIONEL<span class="text-emerald-500">Quest</span></span>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <!-- XP Display -->
+            <div class="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                <div class="text-right hidden md:block">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Баланс</p>
+                    <p class="text-sm font-black text-slate-800 leading-none" id="user-xp-display">0 XP</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 border border-amber-200">
+                    <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                </div>
+            </div>
+            
+            <!-- Settings (API Key) -->
+            <button onclick="toggleSettingsModal()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- SIDEBAR (Mobile Bottom / Desktop Left) -->
+        <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 z-30 md:relative md:w-20 md:flex-col md:border-t-0 md:border-r md:h-full flex justify-around md:justify-start md:pt-8 md:gap-8">
+            <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn p-3 flex flex-col items-center gap-1 text-emerald-600">
+                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Головна</span>
+            </button>
+            <button onclick="switchView('quests')" id="nav-quests" class="nav-btn p-3 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+                <i data-lucide="map" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Квести</span>
+            </button>
+            <button onclick="switchView('simulator')" id="nav-simulator" class="nav-btn p-3 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+                <i data-lucide="message-square-dashed" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Симулятор</span>
+            </button>
+            <button onclick="switchView('leaderboard')" id="nav-leaderboard" class="nav-btn p-3 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+                <i data-lucide="trophy" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Рейтинг</span>
+            </button>
+            <button onclick="switchView('profile')" id="nav-profile" class="nav-btn p-3 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600">
+                <i data-lucide="user-circle" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Профіль</span>
+            </button>
+        </nav>
+
+        <!-- CONTENT AREA -->
+        <main id="app-content" class="flex-1 overflow-y-auto bg-slate-50/50 p-4 pb-24 md:p-8 md:pb-8 relative">
+            <!-- Dynamic Content Will Be Injected Here -->
+        </main>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-fade-in">
+            <h3 class="text-lg font-bold mb-4">Налаштування</h3>
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Google Gemini API Key</label>
+                <input type="password" id="api-key-input" placeholder="Вставте API ключ сюди..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <p id="api-key-status" class="text-xs text-slate-400 mt-2">Ключ зберігається лише у вашому браузері або через Netlify Function.</p>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button onclick="toggleSettingsModal()" class="px-4 py-2 text-slate-500 font-bold hover:bg-slate-50 rounded-lg">Скасувати</button>
+                <button id="save-settings-btn" onclick="saveSettings()" class="px-4 py-2 bg-emerald-500 text-white font-bold rounded-lg hover:bg-emerald-600 shadow-lg shadow-emerald-100">Зберегти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TASK CONFIRMATION MODAL (UPDATED WITH PROOF INPUT) -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[60] modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl animate-fade-in text-center">
+            <div class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-2">Підтвердження</h3>
+            <p class="text-sm text-slate-500 mb-4 leading-relaxed">
+                Додайте посилання на виконане завдання (Reels, Post, Google Drive) для зарахування балів.
+            </p>
+            
+            <input type="text" id="mission-proof-input" placeholder="https://instagram.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-emerald-500" oninput="validateProofInput()">
+
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 text-slate-600 font-bold bg-slate-100 rounded-xl hover:bg-slate-200">Скасувати</button>
+                <button id="confirm-btn-action" disabled class="flex-1 py-3 text-white font-bold bg-slate-300 rounded-xl transition-colors cursor-not-allowed">Надіслати</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONBOARDING AGREEMENT MODAL -->
+    <div id="agreement-modal" class="hidden fixed inset-0 z-[70] bg-slate-900/95 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl animate-fade-in relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 quest-gradient"></div>
+            
+            <div class="text-center mb-6">
+                 <div class="w-16 h-16 bg-slate-100 text-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200 shadow-sm">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Кодекс Партнера Brionel</h2>
+            </div>
+            
+            <div class="space-y-4 text-sm text-slate-600 leading-relaxed bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-6">
+                <p>Ви приймаєте участь у квест-програмі <strong>Brionel</strong> по розвитку в мережі Інтернет та соцмережах.</p>
+                <p>⚠️ Виконання завдань є <span class="font-bold text-slate-800">виключно на вашій совісті</span>.</p>
+                <p>Ми не просимо підтвердження виконання кожного кроку, але можемо вибірково запитати у вас докази.</p>
+                <p class="text-red-500 font-bold">В разі виявлення порушення або обману, учасник дискваліфікується без права відновлення.</p>
+            </div>
+
+            <button onclick="acceptAgreement()" class="w-full py-4 text-white font-bold text-lg quest-gradient rounded-xl hover:opacity-90 shadow-xl shadow-emerald-200 transition-all transform hover:scale-[1.01]">
+                Я зрозумів(ла) та погоджуюсь
+            </button>
+        </div>
+    </div>
+
+    <!-- REWARD CLAIM MODAL -->
+    <div id="reward-modal" class="hidden fixed inset-0 z-[80] modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl animate-fade-in text-center relative overflow-hidden">
+             <div class="absolute top-0 left-0 w-full h-2 quest-gradient"></div>
+             
+             <div class="w-20 h-20 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-yellow-200 animate-bounce">
+                <i data-lucide="gift" class="w-10 h-10"></i>
+            </div>
+            
+            <h3 class="text-2xl font-black text-slate-900 mb-2">Вітаємо! 🎉</h3>
+            <p class="text-slate-500 mb-6">Ви отримали нагороду за участь у події "Зимовий Спринт". Ваша активність вражає!</p>
+            
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">Нагорода</p>
+                <p class="font-bold text-emerald-600 text-lg">Набір пробників + 500 XP</p>
+            </div>
+            
+            <button onclick="document.getElementById('reward-modal').classList.add('hidden')" class="w-full py-3 text-white font-bold bg-emerald-500 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-all">
+                Чудово!
+            </button>
+        </div>
+    </div>
+
+    <!-- GAME MODALS (Shop & Minigame) -->
+    <div id="game-shop-modal" class="hidden fixed inset-0 z-[80] modal-backdrop flex items-center justify-center p-4">
+        <!-- Injected via JS -->
+    </div>
+    
+    <!-- MINIGAME MODAL (Improved) -->
+    <div id="minigame-modal" class="hidden fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div id="minigame-container" class="relative w-full max-w-md h-[500px] bg-slate-800 rounded-3xl overflow-hidden shadow-2xl border border-slate-700 ring-4 ring-slate-900 flex flex-col cursor-paw">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // --- 1. MOCK DATA & STATE ---
+        const APP_STATE = {
+            xp: 0,
+            view: 'dashboard',
+            leaderboardTab: 'RANKING', // RANKING | PRIZES
+            leaderboardScope: 'EVENT', // EVENT | GLOBAL | HISTORY
+            apiKey: (typeof window !== 'undefined' && window.GEMINI_API_KEY) 
+                    ? window.GEMINI_API_KEY 
+                    : (localStorage.getItem('gemini_api_key') || ''),
+            simMode: 'INBOUND', 
+            quests: [], 
+            dailyTasks: [],
+            chatHistory: [],
+            currentCandidate: null,
+            pendingMission: null,
+            purchasedItems: [],
+            selectedEvent: null, // New: Tracks which event user is viewing
+
+            // --- TREE & STREAK STATE ---
+            streakDays: 0,
+            lastActiveDate: new Date().toISOString(),
+            isReturning: false, // Flag for rainbow weather
+
+            // --- CAT GAME STATE ---
+            cat: {
+                level: 1,
+                xp: 0,
+                coins: 100,
+                stats: {
+                    health: 80,
+                    knowledge: 40,
+                    energy: 90,
+                    mood: 70,
+                    motivation: 60
+                },
+                lastLogin: Date.now()
+            }
+        };
+        
+        // --- 1.1 CAT GAME DATA ---
+        const GAME_DATA = {
+            levels: [
+                { lvl: 1, name: "Кошеня", emoji: "🐱", xpReq: 100 },
+                { lvl: 5, name: "Молодий Кіт", emoji: "😼", xpReq: 500 },
+                { lvl: 10, name: "Практик", emoji: "🧣", xpReq: 1000 },
+                { lvl: 15, name: "Професіонал", emoji: "👔", xpReq: 2000 },
+                { lvl: 20, name: "Лідер", emoji: "🦁", xpReq: 4000 },
+                { lvl: 25, name: "Директор", emoji: "👑", xpReq: 8000 },
+                { lvl: 30, name: "Магнат", emoji: "💎", xpReq: 15000 }
+            ],
+            shop: [
+                { id: 'food_1', name: 'Молоко', icon: '🥛', cost: 20, effect: { health: 10, energy: 5 } },
+                { id: 'food_2', name: 'Рибка', icon: '🐟', cost: 50, effect: { health: 25, mood: 10 } },
+                { id: 'toy_1', name: 'М\'ячик', icon: '🎾', cost: 30, effect: { mood: 20, energy: -5 } },
+                { id: 'study_1', name: 'Книга', icon: '📚', cost: 40, effect: { knowledge: 15, mood: -5 } },
+                { id: 'coffee', name: 'Кава', icon: '☕', cost: 25, effect: { energy: 20, health: -2 } }
+            ]
+        };
+
+        // --- 1.2 STATUS SYSTEM (from TZ) ---
+        const STATUS_LEVELS = [
+            { id: 'starter', name: 'Стартер', emoji: '🌱', minXP: 0, maxXP: 99, color: 'bg-slate-100 text-slate-600', privileges: 'Базовий доступ' },
+            { id: 'active', name: 'Активний', emoji: '⚡', minXP: 100, maxXP: 499, color: 'bg-blue-100 text-blue-600', privileges: '+ Розширений банк контенту' },
+            { id: 'leader', name: 'Лідер потоку', emoji: '🔥', minXP: 500, maxXP: 1499, color: 'bg-orange-100 text-orange-600', privileges: '+ Всі сценарії симулятора' },
+            { id: 'master', name: 'Майстер рекрутингу', emoji: '💎', minXP: 1500, maxXP: 4999, color: 'bg-purple-100 text-purple-600', privileges: '+ Преміум AI-функції' },
+            { id: 'legend', name: 'Легенда BRIONEL', emoji: '👑', minXP: 5000, maxXP: Infinity, color: 'bg-amber-100 text-amber-600', privileges: '+ Ексклюзивні матеріали, менторство' }
+        ];
+
+        // --- 1.3 BADGES SYSTEM ---
+        const BADGES = [
+            { id: 'first_step', name: 'Перший крок', description: 'Завершив перший етап квесту', icon: 'footprints', color: 'bg-emerald-100 text-emerald-600', condition: (state) => state.quests[0]?.missions.every(m => m.isCompleted) },
+            { id: 'serial_worker', name: 'Серійник', description: '7 днів активності поспіль', icon: 'flame', color: 'bg-orange-100 text-orange-600', condition: () => false }, // TODO: implement streak
+            { id: 'word_master', name: 'Майстер слова', description: 'Пройшов 10 діалогів з оцінкою 8+', icon: 'message-circle', color: 'bg-blue-100 text-blue-600', condition: () => false },
+            { id: 'content_machine', name: 'Контент-машина', description: 'Опублікував 30 одиниць контенту', icon: 'video', color: 'bg-pink-100 text-pink-600', condition: () => false },
+            { id: 'first_partner', name: 'Перший партнер', description: 'Запросив першого партнера в команду', icon: 'user-plus', color: 'bg-purple-100 text-purple-600', condition: (state) => state.quests.find(s => s.week === 6)?.missions.find(m => m.id === '6-4')?.isCompleted },
+            { id: 'unstoppable', name: 'Невтомний', description: '30 днів активності поспіль', icon: 'zap', color: 'bg-amber-100 text-amber-600', condition: () => false },
+            { id: 'cat_trainer', name: 'Котячий тренер', description: 'Підняв партнера до 5 рівня', icon: 'cat', color: 'bg-indigo-100 text-indigo-600', condition: (state) => state.cat.level >= 5 },
+            { id: 'rich_cat', name: 'Котячий магнат', description: 'Накопичив 500 монет', icon: 'coins', color: 'bg-yellow-100 text-yellow-600', condition: (state) => state.cat.coins >= 500 }
+        ];
+
+        function getUserStatus(xp) {
+            return STATUS_LEVELS.find(s => xp >= s.minXP && xp <= s.maxXP) || STATUS_LEVELS[0];
+        }
+
+        function getEarnedBadges() {
+            return BADGES.filter(badge => badge.condition(APP_STATE));
+        }
+
+        // --- 1.4 GROWTH TREE SYSTEM ---
+        const TREE_STAGES = [
+            { id: 'seed', name: 'Насіння', minXP: 0, icon: '🌰', color: '#8B4513', bgGradient: 'from-amber-100 to-amber-50' },
+            { id: 'sprout', name: 'Паросток', minXP: 100, icon: '🌱', color: '#90EE90', bgGradient: 'from-green-100 to-emerald-50' },
+            { id: 'young', name: 'Молоде деревце', minXP: 300, icon: '🌿', color: '#32CD32', bgGradient: 'from-green-200 to-emerald-100' },
+            { id: 'tree', name: 'Дерево', minXP: 700, icon: '🌳', color: '#228B22', bgGradient: 'from-emerald-200 to-green-100' },
+            { id: 'bloom', name: 'Квітуче дерево', minXP: 1500, icon: '🌸', color: '#FFB6C1', bgGradient: 'from-pink-100 to-rose-50' },
+            { id: 'fruit', name: 'Плодове дерево', minXP: 3000, icon: '🍎', color: '#FF6347', bgGradient: 'from-red-100 to-orange-50' },
+            { id: 'golden', name: 'Могутній дуб', minXP: 5000, icon: '👑🌳', color: '#FFD700', bgGradient: 'from-yellow-100 to-amber-50' }
+        ];
+
+        const WEATHER_TYPES = [
+            { id: 'sunny', name: 'Сонячно', icon: '☀️', daysInactive: 0, animation: 'animate-pulse-glow' },
+            { id: 'light-clouds', name: 'Легкі хмари', icon: '🌤', daysInactive: 1, animation: '' },
+            { id: 'cloudy', name: 'Похмуро', icon: '🌥', daysInactive: 2, animation: '' },
+            { id: 'rain', name: 'Дощ', icon: '🌧', daysInactive: 4, animation: 'animate-rain' },
+            { id: 'storm', name: 'Гроза', icon: '⛈', daysInactive: 7, animation: 'animate-shake-slow' },
+            { id: 'rainbow', name: 'Веселка', icon: '🌈', special: 'return', animation: 'animate-rainbow' },
+            { id: 'sparkle', name: 'Сяйво', icon: '✨', special: 'top3', animation: 'animate-sparkle' }
+        ];
+
+        const STREAK_MULTIPLIERS = [
+            { minDays: 30, multiplier: 2.5, label: '🔥🔥🔥' },
+            { minDays: 14, multiplier: 2.0, label: '🔥🔥' },
+            { minDays: 7, multiplier: 1.5, label: '🔥' },
+            { minDays: 0, multiplier: 1.0, label: '' }
+        ];
+
+        // Tree calculation functions
+        function getTreeStage(totalXP) {
+            for (let i = TREE_STAGES.length - 1; i >= 0; i--) {
+                if (totalXP >= TREE_STAGES[i].minXP) {
+                    return TREE_STAGES[i];
+                }
+            }
+            return TREE_STAGES[0];
+        }
+
+        function getTreeProgress(totalXP) {
+            const currentStage = getTreeStage(totalXP);
+            const currentIndex = TREE_STAGES.findIndex(s => s.id === currentStage.id);
+            const nextStage = TREE_STAGES[currentIndex + 1];
+
+            if (!nextStage) {
+                return { current: totalXP, target: totalXP, percent: 100, remaining: 0, nextStage: null };
+            }
+
+            const stageXP = totalXP - currentStage.minXP;
+            const stageTotal = nextStage.minXP - currentStage.minXP;
+            const percent = Math.round((stageXP / stageTotal) * 100);
+
+            return {
+                current: totalXP,
+                target: nextStage.minXP,
+                percent,
+                remaining: nextStage.minXP - totalXP,
+                nextStage
+            };
+        }
+
+        function getWeather(lastActiveDate, isTop3 = false, isReturning = false) {
+            if (isTop3) {
+                return WEATHER_TYPES.find(w => w.id === 'sparkle');
+            }
+            if (isReturning) {
+                return WEATHER_TYPES.find(w => w.id === 'rainbow');
+            }
+
+            const now = new Date();
+            const lastActive = new Date(lastActiveDate);
+            const diffTime = Math.abs(now - lastActive);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            // Find appropriate weather based on days inactive
+            const regularWeather = WEATHER_TYPES.filter(w => w.daysInactive !== undefined);
+            for (let i = regularWeather.length - 1; i >= 0; i--) {
+                if (diffDays >= regularWeather[i].daysInactive) {
+                    return regularWeather[i];
+                }
+            }
+            return WEATHER_TYPES[0];
+        }
+
+        function getStreakMultiplier(streakDays) {
+            for (const { minDays, multiplier, label } of STREAK_MULTIPLIERS) {
+                if (streakDays >= minDays) {
+                    return { multiplier, label };
+                }
+            }
+            return { multiplier: 1.0, label: '' };
+        }
+
+        const DATA = {
+            stages: [
+                {
+                    week: 1,
+                    title: "Крок 1: Фундамент та Упаковка",
+                    missions: [
+                        { id: '1-1', title: 'Створити Інста профіль', description: 'Заповнити біо, додати аватар, переключити на бізнес', xpReward: 100, isCompleted: false },
+                        { id: '1-2', title: 'Створити YouTube канал', description: 'Оформити шапку, лого та опис каналу', xpReward: 100, isCompleted: false },
+                        { id: '1-3', title: 'Зареєструвати TikTok', description: 'Базове оформлення профілю', xpReward: 50, isCompleted: false },
+                        { id: '1-4', title: 'Створити ТГ канал', description: 'Назва, опис, перше вітальне повідомлення', xpReward: 50, isCompleted: false }
+                    ]
+                },
+                {
+                    week: 2,
+                    title: "Крок 2: Відео-Контент",
+                    missions: [
+                        { id: '2-1', title: 'Reels: Історія змін (Частина 1)', description: 'Початок вашої історії. Ким ви були "до"', xpReward: 100, isCompleted: false },
+                        { id: '2-2', title: 'Reels: Історія змін (Частина 2)', description: 'Що змінилося з Brionel. Результати', xpReward: 100, isCompleted: false },
+                        { id: '2-3', title: 'Reels: Історія змін (Частина 3)', description: 'Заклик до дії. Запрошення в команду', xpReward: 100, isCompleted: false },
+                        { id: '2-4', title: 'Розпакування №1', description: 'Огляд продукту (відео в сторіс/тікток)', xpReward: 100, isCompleted: false }
+                    ]
+                },
+                {
+                    week: 3,
+                    title: "Крок 3: Експертність та Текст",
+                    missions: [
+                        { id: '3-1', title: 'Пост в Instagram №1', description: 'Про користь продукту', xpReward: 40, isCompleted: false },
+                        { id: '3-2', title: 'Карусель в Instagram №1', description: '5 міфів про мережевий бізнес', xpReward: 70, isCompleted: false },
+                        { id: '3-3', title: 'ТГ Пост №1', description: 'Мій ранок з продуктом', xpReward: 30, isCompleted: false },
+                        { id: '3-4', title: 'ТГ Пост №2', description: 'Результати клієнтів (кейс)', xpReward: 30, isCompleted: false },
+                        { id: '3-5', title: 'Розпакування №2', description: 'Детальний огляд складу продукту', xpReward: 100, isCompleted: false }
+                    ]
+                },
+                {
+                    week: 4,
+                    title: "Крок 4: Голос Бренду",
+                    missions: [
+                        { id: '4-1', title: 'Подкаст №1', description: 'Аудіо в ТГ: Чому я тут', xpReward: 40, isCompleted: false },
+                        { id: '4-2', title: 'Подкаст №2', description: 'Аудіо в ТГ: Відповіді на питання', xpReward: 40, isCompleted: false },
+                        { id: '4-3', title: 'Карусель в Instagram №2', description: 'Інструкція: Як замовити', xpReward: 70, isCompleted: false },
+                        { id: '4-4', title: 'Розпакування №3', description: 'Тест-драйв продукту на камеру', xpReward: 100, isCompleted: false },
+                        { id: '4-5', title: 'Пост в Instagram №2', description: 'Лайфстайл фото', xpReward: 40, isCompleted: false }
+                    ]
+                },
+                {
+                    week: 5,
+                    title: "Крок 5: Масштабування",
+                    missions: [
+                        { id: '5-1', title: 'Карусель в Instagram №3', description: 'Топ-5 помилок новачків', xpReward: 70, isCompleted: false },
+                        { id: '5-2', title: 'Подкаст №3, 4, 5', description: 'Серія коротких аудіо-порад', xpReward: 120, isCompleted: false },
+                        { id: '5-3', title: 'ТГ Пости №3, 4, 5', description: 'Заповнення контентом на тиждень', xpReward: 90, isCompleted: false },
+                        { id: '5-4', title: 'Розпакування №4, 5', description: 'Відео-відгуки (2 шт)', xpReward: 200, isCompleted: false },
+                        { id: '5-5', title: 'Пост в Instagram №3', description: 'Підсумки тижня', xpReward: 40, isCompleted: false }
+                    ]
+                },
+                {
+                    week: 6,
+                    title: "Крок 6: Бонус рівень",
+                    missions: [
+                        { id: '6-1', title: 'Партнер зробив оборот 100б', description: 'Допоможіть партнеру закрити ціль', xpReward: 1500, isCompleted: false },
+                        { id: '6-2', title: 'Клієнт зробив замовлення 100б', description: 'Продаж продукту клієнту', xpReward: 1500, isCompleted: false },
+                        { id: '6-3', title: 'Партнер партнера зробив 100б', description: 'Розвиток глибини структури', xpReward: 2500, isCompleted: false },
+                        { id: '6-4', title: 'Мій Перший Партнер', description: 'Підключити партнера з соцмереж', xpReward: 1000, isCompleted: false }
+                    ]
+                }
+            ],
+            dailyTasks: [
+                { id: 'd1', title: 'Написати 3 новим людям', xp: 30, completed: false },
+                { id: 'd2', title: 'Викласти сторіс', xp: 10, completed: false },
+                { id: 'd3', title: 'Відповісти на коментарі', xp: 10, completed: false },
+                { id: 'd4', title: 'Зробити 1 reels/пост', xp: 25, completed: false }
+            ],
+            shop: [
+                { id: 's1', title: 'Баночка Мелатоніну', price: 1000, image: 'pill' },
+                { id: 's2', title: 'Мелатонін + Кордицепс', price: 2000, image: 'package-plus' }
+            ],
+            scenarios: {
+                INBOUND: [
+                    { id: 'in1', name: 'Олена', type: 'Зацікавлена', difficulty: 'EASY', description: 'Мама в декреті, побачила ваш Reels про дохід.', startMsg: 'Привіт! А що це за робота у вас в сторіс? Можна деталі?', icon: 'baby' },
+                    { id: 'in2', name: 'Максим', type: 'Скептик', difficulty: 'MEDIUM', description: 'Студент, шукає підробіток, але боїться скаму.', startMsg: 'Добрий день. Це чергова піраміда чи щось реальне?', icon: 'frown' },
+                    { id: 'in3', name: 'Вікторія', type: 'Підприємець', difficulty: 'HARD', description: 'Має свій магазин одягу. Шукає масштабування.', startMsg: 'Вітаю. Цікавить ваша бізнес-модель. Які умови франшизи?', icon: 'briefcase' },
+                    { id: 'in4', name: 'Олексій', type: 'Троль', difficulty: 'EXPERT', description: 'Пише просто щоб витратити ваш час. Перевірка на стресостійкість.', startMsg: 'Ну і навіщо ви людей дурите своїми баночками?', icon: 'ghost' }
+                ],
+                OUTBOUND: [
+                    { id: 'out1', name: 'Юлія', type: 'Тепла аудиторія', difficulty: 'EASY', description: 'Лайкнула ваш пост про здоров\'я.', context: 'Юлія лайкнула ваш пост про вітаміни.', icon: 'heart' },
+                    { id: 'out2', name: 'Сергій', type: 'Знайомий', difficulty: 'MEDIUM', description: 'Колишній однокласник, не бачились 5 років.', context: 'Ви побачили Сергія в рекомендованих.', icon: 'users' },
+                    { id: 'out3', name: 'Ірина', type: 'Холодний контакт', difficulty: 'HARD', description: 'Активна мама в коментарях у блогера.', context: 'Ви знайшли її в коментарях під постом про вигорання.', icon: 'search' },
+                    { id: 'out4', name: 'Андрій', type: 'Мережовик', difficulty: 'EXPERT', description: 'Лідер іншої MLM компанії. Дуже складний рекрутинг.', context: 'У нього в шапці профілю написано "Топ-Лідер".', icon: 'zap' }
+                ]
+            },
+            // PRIZE STRUCTURE
+            prizes: [
+                { id: 'p1', rankRange: [1, 1], title: 'Король Гори', items: ['Вітамінний комплекс Ultra', 'Повний набір косметики', 'Квиток на івент'], color: 'gold-gradient' },
+                { id: 'p2', rankRange: [2, 2], title: 'Срібний Призер', items: ['Вітаміни + Омега-3', 'Денний крем'], color: 'silver-gradient' },
+                { id: 'p3', rankRange: [3, 3], title: 'Бронзовий Призер', items: ['Вітамін C', 'Засіб для прання'], color: 'bronze-gradient' },
+                { id: 'p4', rankRange: [4, 10], title: 'Топ-10 Лідерів', items: ['Вітамін D3 (2000 MO)', 'Зубна паста Brionel'], color: 'bg-white border-slate-300' },
+                { id: 'p5', rankRange: [11, 20], title: 'Активіст', items: ['Крем для рук', 'Пробники косметики'], color: 'bg-white border-slate-200' },
+                { id: 'p6', rankRange: [21, 50], title: 'Учасник', items: ['500 XP Бонус'], color: 'bg-white border-slate-100' }
+            ],
+            // INITIAL DUMMY USERS (Will generate more dynamically)
+            leaderboard: [
+                { id: 1, name: 'Олександр К.', xp: 5450, rank: 1 },
+                { id: 2, name: 'Марія П.', xp: 4800, rank: 2 },
+                { id: 4, name: 'Дмитро В.', xp: 4200, rank: 3 },
+                { id: 5, name: 'Анна С.', xp: 3750, rank: 4 },
+                { id: 3, name: 'Ви (Це Ви)', xp: 0, rank: 35 } // Placeholder rank, updates dynamically
+            ]
+        };
+
+        // --- PERSISTENCE: Load saved state from localStorage ---
+        const STORAGE_KEY = 'brionel_quest_state';
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    // Merge saved state with defaults
+                    APP_STATE.xp = parsed.xp || 0;
+                    APP_STATE.purchasedItems = parsed.purchasedItems || [];
+                    APP_STATE.cat = parsed.cat || APP_STATE.cat;
+                    APP_STATE.quests = parsed.quests || JSON.parse(JSON.stringify(DATA.stages));
+                    APP_STATE.dailyTasks = parsed.dailyTasks || JSON.parse(JSON.stringify(DATA.dailyTasks));
+                    APP_STATE.selectedEvent = parsed.selectedEvent || null; // Restore selected event
+
+                    // --- TREE & STREAK ---
+                    APP_STATE.streakDays = parsed.streakDays || 0;
+                    APP_STATE.lastActiveDate = parsed.lastActiveDate || new Date().toISOString();
+                    APP_STATE.isReturning = parsed.isReturning || false;
+
+                    // --- IMPORTANT: Don't overwrite Netlify Key with LocalStorage null ---
+                    if (typeof window !== 'undefined' && window.GEMINI_API_KEY) {
+                         APP_STATE.apiKey = window.GEMINI_API_KEY;
+                    } else {
+                         APP_STATE.apiKey = localStorage.getItem('gemini_api_key') || '';
+                    }
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Failed to load state:', e);
+            }
+            return false;
+        }
+
+        function saveState() {
+            try {
+                const toSave = {
+                    xp: APP_STATE.xp,
+                    purchasedItems: APP_STATE.purchasedItems,
+                    cat: APP_STATE.cat,
+                    quests: APP_STATE.quests,
+                    dailyTasks: APP_STATE.dailyTasks,
+                    selectedEvent: APP_STATE.selectedEvent,
+                    streakDays: APP_STATE.streakDays,
+                    lastActiveDate: APP_STATE.lastActiveDate,
+                    isReturning: APP_STATE.isReturning
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+            } catch (e) {
+                console.warn('Failed to save state:', e);
+            }
+        }
+
+        // Load or initialize state
+        if (!loadState()) {
+            APP_STATE.quests = JSON.parse(JSON.stringify(DATA.stages));
+            APP_STATE.dailyTasks = JSON.parse(JSON.stringify(DATA.dailyTasks));
+        }
+
+        // Generate more dummy users for leaderboard
+        const names = ['Іван', 'Ольга', 'Петро', 'Наталія', 'Сергій', 'Юлія', 'Андрій', 'Вікторія'];
+        for(let i=6; i<=50; i++) {
+            DATA.leaderboard.push({
+                id: i,
+                name: `${names[Math.floor(Math.random() * names.length)]} ${String.fromCharCode(65+Math.floor(Math.random()*26))}.`,
+                xp: Math.max(100, 3000 - (i * 50) + Math.floor(Math.random()*100)),
+                rank: i
+            });
+        }
+
+        // --- 2. CORE FUNCTIONS ---
+
+        function init() {
+            lucide.createIcons();
+            recalcRank(); // Calculate initial rank
+            updateXPDisplay();
+            switchView('dashboard');
+            // Simulate cat decay on init
+            processCatDecay();
+
+            // --- ADDED: ENTER KEY FOR CONFIRMATION ---
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const confirmModal = document.getElementById('confirm-modal');
+                    if (confirmModal && !confirmModal.classList.contains('hidden')) {
+                         const btn = document.getElementById('confirm-btn-action');
+                         if(!btn.disabled) btn.click();
+                    }
+                }
+                // Optional: Esc to close
+                if (e.key === 'Escape') {
+                    const confirmModal = document.getElementById('confirm-modal');
+                    if (confirmModal && !confirmModal.classList.contains('hidden')) {
+                         closeConfirmModal();
+                    }
+                }
+            });
+        }
+
+        function recalcRank() {
+            const myUser = DATA.leaderboard.find(u => u.id === 3);
+            myUser.xp = APP_STATE.xp;
+            
+            // Sort leaderboard by XP
+            DATA.leaderboard.sort((a, b) => b.xp - a.xp);
+            
+            // Update Rank numbers
+            DATA.leaderboard.forEach((u, index) => {
+                u.rank = index + 1;
+            });
+        }
+
+        function addXP(amount) {
+            APP_STATE.xp += amount;
+            // Also add Coins/XP to Cat
+            APP_STATE.cat.coins += Math.floor(amount / 5);
+            updateCatStats({ xp: Math.floor(amount / 2), motivation: 5 });
+
+            recalcRank();
+            updateXPDisplay();
+            saveState(); // Persist changes
+            showToast(`+${amount} XP отримано!`);
+        }
+
+        function spendXP(amount) {
+            if (APP_STATE.xp >= amount) {
+                APP_STATE.xp -= amount;
+                recalcRank();
+                updateXPDisplay();
+                saveState(); // Persist changes
+                return true;
+            }
+            return false;
+        }
+
+        function updateXPDisplay() {
+            document.getElementById('user-xp-display').innerText = `${APP_STATE.xp} XP`;
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 ${isError ? 'bg-red-500' : 'bg-slate-800'} text-white px-6 py-3 rounded-full font-bold shadow-2xl z-[80] animate-fade-in text-sm flex items-center gap-2`;
+            toast.innerHTML = isError 
+                ? `<i data-lucide="x-circle" class="w-4 h-4 text-white"></i> ${message}`
+                : `<i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i> ${message}`;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function switchView(viewName) {
+            APP_STATE.view = viewName;
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-600', 'text-slate-400');
+                if (btn.id === `nav-${viewName}`) {
+                    btn.classList.add('text-emerald-600');
+                    btn.querySelector('div')?.classList.add('bg-emerald-50');
+                } else {
+                    btn.classList.add('text-slate-400');
+                }
+            });
+
+            const contentEl = document.getElementById('app-content');
+            contentEl.innerHTML = ''; 
+
+            if (viewName === 'dashboard') renderDashboard(contentEl, true);
+            if (viewName === 'quests') {
+                // Check if an event is already selected
+                if (APP_STATE.selectedEvent) {
+                    renderQuests(contentEl, true);
+                } else {
+                    renderEventList(contentEl, true);
+                }
+            }
+            if (viewName === 'simulator') renderSimulatorSelector(contentEl);
+            if (viewName === 'leaderboard') renderLeaderboard(contentEl);
+            if (viewName === 'profile') renderProfile(contentEl);
+
+            lucide.createIcons();
+        }
+
+        // --- AGREEMENT LOGIC ---
+        function openAgreementModal(eventId) {
+            APP_STATE.pendingEventId = eventId;
+            document.getElementById('agreement-modal').classList.remove('hidden');
+        }
+
+        function acceptAgreement() {
+            const eventId = APP_STATE.pendingEventId || 'intensive-2026';
+            APP_STATE.selectedEvent = eventId;
+            localStorage.setItem('brionel_agreement', 'true'); // Backward compatibility
+            saveState();
+            document.getElementById('agreement-modal').classList.add('hidden');
+            // Go to Quests map
+            renderQuests(document.getElementById('app-content'), true);
+            lucide.createIcons();
+        }
+
+        // --- CONFIRMATION MODAL LOGIC (UPDATED WITH VALIDATION) ---
+        function requestMissionComplete(week, missionId, element) {
+            const stage = APP_STATE.quests.find(s => s.week === week);
+            const mission = stage.missions.find(m => m.id === missionId);
+            if (mission.isCompleted) return; 
+            APP_STATE.pendingMission = { week, missionId };
+            
+            // Clear input
+            const input = document.getElementById('mission-proof-input');
+            input.value = '';
+            validateProofInput(); // Reset button state
+
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            
+            const confirmBtn = document.getElementById('confirm-btn-action');
+            confirmBtn.onclick = function() {
+                // Save proof logic here (mock)
+                const proofLink = input.value;
+                console.log(`Mission Completed. Proof: ${proofLink}`);
+                
+                completeMission(APP_STATE.pendingMission.week, APP_STATE.pendingMission.missionId);
+                closeConfirmModal();
+            };
+        }
+
+        function validateProofInput() {
+            const input = document.getElementById('mission-proof-input');
+            const btn = document.getElementById('confirm-btn-action');
+            if(input.value.trim().length > 5) {
+                btn.disabled = false;
+                btn.classList.remove('bg-slate-300', 'cursor-not-allowed');
+                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600', 'shadow-lg');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-slate-300', 'cursor-not-allowed');
+                btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600', 'shadow-lg');
+            }
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            APP_STATE.pendingMission = null;
+        }
+
+        function completeMission(week, missionId) {
+            const stage = APP_STATE.quests.find(s => s.week === week);
+            const mission = stage.missions.find(m => m.id === missionId);
+            if (mission && !mission.isCompleted) {
+                mission.isCompleted = true;
+
+                // Update streak
+                updateActivityStreak();
+
+                addXP(mission.xpReward);
+                saveState(); // Persist quest progress
+                renderQuests(document.getElementById('app-content'), false);
+                lucide.createIcons();
+            }
+        }
+        
+        // --- PRIZE CLAIMING LOGIC ---
+        function claimPrize() {
+            const modal = document.getElementById('reward-modal');
+            modal.classList.remove('hidden');
+            
+            // Create confetti
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                confetti.style.backgroundColor = ['#10b981', '#fbbf24', '#f472b6', '#3b82f6'][Math.floor(Math.random() * 4)];
+                document.body.appendChild(confetti);
+                
+                // Cleanup confetti
+                setTimeout(() => confetti.remove(), 3000);
+            }
+            
+            lucide.createIcons();
+        }
+
+
+        // ==========================================
+        // === PARTNER GAME MODULE (BRIONEL CAT) ===
+        // ==========================================
+
+        function processCatDecay() {
+            // In a real app, calculate diff between Date.now() and lastLogin
+            // For demo, we just simulate small decay
+            APP_STATE.cat.stats.energy = Math.max(0, APP_STATE.cat.stats.energy - 5);
+            APP_STATE.cat.stats.mood = Math.max(0, APP_STATE.cat.stats.mood - 2);
+        }
+
+        function updateCatStats(changes) {
+            const s = APP_STATE.cat.stats;
+            if(changes.health) s.health = Math.min(100, Math.max(0, s.health + changes.health));
+            if(changes.knowledge) s.knowledge = Math.min(100, Math.max(0, s.knowledge + changes.knowledge));
+            if(changes.energy) s.energy = Math.min(100, Math.max(0, s.energy + changes.energy));
+            if(changes.mood) s.mood = Math.min(100, Math.max(0, s.mood + changes.mood));
+            if(changes.motivation) s.motivation = Math.min(100, Math.max(0, s.motivation + changes.motivation));
+            
+            // Level Up Logic
+            if(changes.xp) {
+                APP_STATE.cat.xp += changes.xp;
+                const nextLvlReq = APP_STATE.cat.level * 100;
+                if(APP_STATE.cat.xp >= nextLvlReq) {
+                    APP_STATE.cat.level++;
+                    APP_STATE.cat.xp -= nextLvlReq;
+                    showToast(`Ваш партнер підняв рівень! ${APP_STATE.cat.level} LVL`);
+                }
+            }
+            saveState(); // Persist cat state changes
+        }
+
+        function getCatImageSrc() {
+            const cat = APP_STATE.cat;
+            // NEW LOGIC: Sad cat if stats < 30%
+            if (cat.stats.energy < 30 || cat.stats.mood < 30) return 'img/sad_cat.png';
+            
+            if (cat.level >= 5) return 'img/5_cat.png';
+            if (cat.level >= 3) return 'img/3_cat.png';
+            return 'img/cat.png';
+        }
+
+        function getCatMessage() {
+            const s = APP_STATE.cat.stats;
+            // NEW LOGIC: Specific Warnings
+            if(s.health < 30) return "Мені не добре... 🤒";
+            if(s.energy < 30) return "Я втомлений... 😴";
+            if(s.mood < 30) return "Хочу грати... 😿";
+            return "Ми порвемо цей ринок! 🚀";
+        }
+
+        function renderCatGame(container) {
+            const cat = APP_STATE.cat;
+            const msg = getCatMessage();
+            const nextLvlReq = cat.level * 100;
+            const catImgSrc = getCatImageSrc();
+            
+            // NEW LOGIC: Calculate grayscale class based on Energy
+            let imgClass = "w-40 h-40 md:w-64 md:h-64 object-contain drop-shadow-xl transition-all";
+            if (cat.stats.energy < 20) {
+                imgClass += " grayscale-heavy";
+            } else if (cat.stats.energy < 50) {
+                imgClass += " grayscale-light";
+            }
+
+            const statBar = (label, val, icon, color) => `
+                <div class="mb-3">
+                    <div class="flex justify-between text-xs font-bold mb-1 text-slate-500">
+                        <span class="flex items-center gap-1"><i data-lucide="${icon}" class="w-3 h-3"></i> ${label}</span>
+                        <span>${val}%</span>
+                    </div>
+                    <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full ${color} transition-all duration-500" style="width: ${val}%"></div>
+                    </div>
+                </div>
+            `;
+
+            let html = `
+                <div class="animate-fade-in max-w-5xl mx-auto pb-20">
+                    
+                    <header class="text-center mb-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-1">Мій Партнер</h2>
+                        <p class="text-slate-500 text-sm">Ваш віртуальний асистент, який росте разом з вашим бізнесом.<br>Доглядайте за ним, виконуючи реальні дії.</p>
+                    </header>
+
+                    <!-- Top Info (Mobile Only) -->
+                    <div class="flex justify-between items-center mb-6 md:hidden">
+                        <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 font-bold text-slate-700 flex items-center gap-2">
+                             <span>💰 ${cat.coins}</span>
+                             <button onclick="openGameShop()" class="bg-emerald-100 text-emerald-600 p-1 rounded hover:bg-emerald-200"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                        </div>
+                        <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 font-bold text-slate-700">
+                            Lvl ${cat.level}
+                        </div>
+                    </div>
+
+                    <!-- DESKTOP SPLIT LAYOUT -->
+                    <div class="flex flex-col md:flex-row md:gap-8 items-start">
+                        
+                        <!-- LEFT COLUMN: CAT VISUAL -->
+                        <div class="w-full md:w-1/2">
+                            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 text-center relative overflow-hidden mb-6 h-full min-h-[400px] flex flex-col justify-center">
+                                <div class="absolute top-0 left-0 w-full h-2 quest-gradient"></div>
+                                
+                                <!-- Speech Bubble -->
+                                <div class="inline-block bg-slate-100 px-4 py-2 rounded-xl rounded-bl-none text-xs font-bold text-slate-600 mb-6 animate-bounce mx-auto">
+                                    ${msg}
+                                </div>
+
+                                <!-- The Cat (Larger on Desktop) -->
+                                <div class="mb-8 animate-float cursor-pointer select-none transition-transform active:scale-95 flex justify-center" onclick="petCat()">
+                                    <img src="${catImgSrc}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616430.png'" alt="Cat" class="${imgClass}">
+                                </div>
+                                
+                                <!-- XP Bar -->
+                                <div class="max-w-xs mx-auto mb-2 w-full">
+                                    <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1">
+                                        <span>XP Партнера</span>
+                                        <span>${cat.xp} / ${nextLvlReq}</span>
+                                    </div>
+                                    <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-indigo-500 transition-all duration-500" style="width: ${(cat.xp/nextLvlReq)*100}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: STATS & ACTIONS -->
+                        <div class="w-full md:w-1/2 space-y-6">
+                            
+                            <!-- Desktop Top Info -->
+                            <div class="hidden md:flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                                <div class="font-bold text-slate-700 flex items-center gap-2">
+                                     <span class="text-slate-400 uppercase text-xs">Баланс:</span>
+                                     <span class="text-xl">💰 ${cat.coins}</span>
+                                     <button onclick="openGameShop()" class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg hover:bg-emerald-200 transition-colors"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                </div>
+                                <div class="font-bold text-slate-700 text-xl">
+                                    <span class="text-slate-400 uppercase text-xs mr-2">Рівень:</span> ${cat.level}
+                                </div>
+                            </div>
+
+                            <!-- STATS GRID -->
+                            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                                <h3 class="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wider">Стан Партнера</h3>
+                                ${statBar('Здоров\'я', cat.stats.health, 'heart', 'bg-red-500')}
+                                ${statBar('Енергія', cat.stats.energy, 'battery-charging', 'bg-emerald-500')}
+                                ${statBar('Настрій', cat.stats.mood, 'smile', 'bg-amber-400')}
+                                ${statBar('Знання', cat.stats.knowledge, 'book-open', 'bg-blue-500')}
+                            </div>
+
+                            <!-- ACTIONS -->
+                            <div class="grid grid-cols-2 gap-3">
+                                 <button onclick="openGameShop()" class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col items-center gap-2 hover:border-emerald-300 hover:bg-emerald-50 transition-all">
+                                    <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-amber-600"><i data-lucide="shopping-basket"></i></div>
+                                    <span class="font-bold text-sm">Магазин</span>
+                                </button>
+
+                                <button onclick="openMiniGame()" class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col items-center gap-2 hover:border-emerald-300 hover:bg-emerald-50 transition-all">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i data-lucide="gamepad-2"></i></div>
+                                    <span class="font-bold text-sm">Грати</span>
+                                </button>
+
+                                 <button onclick="trainCat()" class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col items-center gap-2 hover:border-emerald-300 hover:bg-emerald-50 transition-all">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600"><i data-lucide="graduation-cap"></i></div>
+                                    <span class="font-bold text-sm">Навчання</span>
+                                </button>
+
+                                 <button onclick="workCat()" class="quest-gradient text-white p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg shadow-emerald-200 hover:opacity-90 transition-all">
+                                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white"><i data-lucide="briefcase"></i></div>
+                                    <span class="font-bold text-sm">Працювати</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INSTRUCTIONS (Full width) -->
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 mt-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="info" class="w-5 h-5 text-blue-500"></i>
+                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Як доглядати за партнером</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600">
+                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i data-lucide="battery-charging" class="w-4 h-4 text-emerald-500"></i> Енергія - це гроші</h4>
+                                <p class="mb-2">Щоб відправити партнера <strong>"Працювати"</strong> (і заробити реальні XP та монети), йому потрібна Енергія.</p>
+                                <p>Якщо енергія впала - купіть йому <strong>Каву</strong> або <strong>Їжу</strong> в магазині.</p>
+                            </div>
+
+                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2"><i data-lucide="shopping-basket" class="w-4 h-4 text-amber-500"></i> Навіщо Магазин?</h4>
+                                <p class="mb-2">У магазині ви обмінюєте зароблені монети на відновлення показників.</p>
+                                <ul class="list-disc pl-4 space-y-1 text-xs">
+                                    <li><strong>Кава/Молоко:</strong> Відновлює Енергію.</li>
+                                    <li><strong>Іграшки:</strong> Піднімають Настрій (потрібен для ефективної роботи).</li>
+                                    <li><strong>Книги:</strong> Дають Знання (пришвидшують ріст рівня).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // --- GAME ACTIONS ---
+
+        function petCat() {
+            updateCatStats({ mood: 5 });
+            showToast("Муррр! 🥰");
+            renderProfile(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        function trainCat() {
+            if(APP_STATE.cat.stats.energy < 20) {
+                showToast("Занадто втомлений для навчання!", true);
+                return;
+            }
+            updateCatStats({ knowledge: 10, energy: -20, xp: 20 });
+            showToast("Знання отримано!");
+            renderProfile(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        function workCat() {
+             if(APP_STATE.cat.stats.energy < 30) {
+                showToast("Треба відпочити! Купіть кави в магазині.", true);
+                return;
+            }
+            // Work converts Cat Energy to Real XP and Coins
+            updateCatStats({ energy: -30, mood: -5, xp: 50 });
+            APP_STATE.cat.coins += 20;
+
+            // Add REAL XP to user
+            addXP(10);
+
+            // Stay on Profile view
+            APP_STATE.view = 'profile';
+            renderProfile(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        // --- SHOP MODULE ---
+        function openGameShop() {
+            const modal = document.getElementById('game-shop-modal');
+            let html = `
+                <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl animate-fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold">Зоомагазин</h3>
+                        <button onclick="document.getElementById('game-shop-modal').classList.add('hidden')" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-xl mb-4 text-center font-bold text-amber-700">
+                        Ваш баланс: ${APP_STATE.cat.coins} 💰
+                    </div>
+                    <div class="space-y-3">
+                        ${GAME_DATA.shop.map(item => `
+                            <div class="flex items-center justify-between p-3 border border-slate-100 rounded-xl hover:bg-slate-50">
+                                <div class="flex items-center gap-3">
+                                    <div class="text-2xl">${item.icon}</div>
+                                    <div>
+                                        <div class="font-bold text-sm">${item.name}</div>
+                                        <div class="text-xs text-slate-400">
+                                            ${Object.entries(item.effect).map(([k,v]) => `${k}: ${v>0?'+':''}${v}`).join(', ')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="buyGameItem('${item.id}')" class="bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-emerald-600">
+                                    ${item.cost} 💰
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            modal.innerHTML = html;
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function buyGameItem(itemId) {
+            const item = GAME_DATA.shop.find(i => i.id === itemId);
+            if(APP_STATE.cat.coins >= item.cost) {
+                APP_STATE.cat.coins -= item.cost;
+                updateCatStats(item.effect);
+                saveState(); // Persist purchase
+                showToast(`Куплено: ${item.name}`);
+                openGameShop(); // Re-render shop
+                renderProfile(document.getElementById('app-content')); // Update profile stats
+            } else {
+                showToast("Не вистачає монет!", true);
+            }
+        }
+
+        // --- MINI GAME MODULE (IMPROVED) ---
+        let gameInterval;
+        let gameScore = 0;
+        let gameTime = 30;
+
+        function openMiniGame() {
+            const modal = document.getElementById('minigame-modal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex'; // Ensure flex layout
+
+            const container = document.getElementById('minigame-container');
+            
+            // Initial Instruction Overlay
+            container.innerHTML = `
+                <!-- INSTRUCTION SCREEN -->
+                <div id="game-instructions" class="absolute inset-0 z-20 bg-slate-800 flex flex-col items-center justify-center text-center p-6 space-y-6">
+                    <div class="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mb-2 animate-bounce">
+                        <span class="text-4xl">🐾</span>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-white mb-2">Злови здобич!</h3>
+                        <p class="text-slate-400 text-sm">Тренуй реакцію мисливця.</p>
+                    </div>
+                    <ul class="text-left text-slate-300 text-sm space-y-2 bg-slate-700/50 p-4 rounded-xl w-full">
+                        <li class="flex items-center gap-2"><i data-lucide="mouse-pointer-2" class="w-4 h-4 text-emerald-400"></i> Клікай швидко!</li>
+                        <li class="flex items-center gap-2 text-slate-400 text-xs pl-6">Об'єкти зникають самі через 2 сек.</li>
+                        <li class="flex items-center gap-2"><i data-lucide="coins" class="w-4 h-4 text-yellow-400"></i> 1 м'яч = 2 монети</li>
+                        <li class="flex items-center gap-2 text-red-400 font-bold"><i data-lucide="bomb" class="w-4 h-4"></i> Уникай бомб (-5 очок)</li>
+                    </ul>
+                    <button onclick="startGameLoop()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02]">
+                        Почати полювання
+                    </button>
+                    <button onclick="closeMiniGame()" class="text-slate-500 hover:text-slate-300 text-xs font-bold mt-4">Вийти</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function startGameLoop() {
+            const container = document.getElementById('minigame-container');
+            gameScore = 0;
+            gameTime = 30;
+
+            // Render Game Interface
+            container.innerHTML = `
+                <div class="relative w-full h-full bg-slate-900">
+                    <!-- HUD -->
+                    <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-10 pointer-events-none">
+                        <div class="bg-slate-800/80 backdrop-blur border border-slate-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
+                            <span class="text-2xl">🏆</span> <span id="game-score">0</span>
+                        </div>
+                        <div class="bg-slate-800/80 backdrop-blur border border-slate-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
+                            <span class="text-2xl">⏳</span> <span id="game-timer">30</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Close Button -->
+                    <button onclick="closeMiniGame()" class="absolute top-4 right-1/2 translate-x-1/2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-full z-20 backdrop-blur transition-colors cursor-pointer pointer-events-auto">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Game Area -->
+                    <div id="game-area" class="w-full h-full relative overflow-hidden cursor-paw"></div>
+                </div>
+            `;
+            lucide.createIcons();
+
+            spawnBall(); // Start spawning
+            
+            gameInterval = setInterval(() => {
+                gameTime--;
+                const timerEl = document.getElementById('game-timer');
+                if(timerEl) timerEl.innerText = gameTime;
+                if(gameTime <= 0) endMiniGame();
+            }, 1000);
+        }
+
+        function spawnBall() {
+            if(gameTime <= 0) return;
+
+            const area = document.getElementById('game-area');
+            if(!area) return;
+
+            // LIMIT CONCURRENT ITEMS TO 3-4
+            if (area.children.length >= 3) {
+                setTimeout(spawnBall, 500); // Wait a bit and try again
+                return;
+            }
+            
+            const ball = document.createElement('div');
+            ball.classList.add('game-ball'); // Add class for animation targeting
+            
+            // Random chance for special items
+            const rand = Math.random();
+            let type = 'normal'; // normal, bomb, gold
+            let content = '🎾';
+            let bgClass = 'bg-orange-400 border-white shadow-[0_0_20px_rgba(251,146,60,0.5)]';
+            let lifeTime = 2000; // ms before disappearing
+            
+            if (rand < 0.2) { 
+                type = 'bomb';
+                content = '💣';
+                bgClass = 'bg-red-500 border-red-200 shadow-[0_0_20px_rgba(239,68,68,0.5)]';
+                lifeTime = 1500; // Bombs disappear faster
+            } else if (rand > 0.9) {
+                type = 'gold';
+                content = '🌟';
+                bgClass = 'bg-yellow-400 border-yellow-100 shadow-[0_0_20px_rgba(250,204,21,0.5)] animate-spin-slow';
+                lifeTime = 1200; // Gold is harder to catch
+            }
+
+            ball.className = `absolute w-14 h-14 ${bgClass} rounded-full border-4 cursor-paw flex items-center justify-center text-2xl active:scale-90 transition-transform z-0 hover:brightness-110 select-none`;
+            ball.innerHTML = content;
+            
+            // Calculate boundaries based on container size, not window
+            const rect = area.getBoundingClientRect();
+            const maxW = rect.width - 60; 
+            const maxH = rect.height - 60;
+            
+            ball.style.left = Math.random() * maxW + 'px';
+            ball.style.top = Math.random() * maxH + 'px';
+            ball.style.transform = 'scale(0)'; // Start small
+
+            // SPAWN ANIMATION
+            requestAnimationFrame(() => {
+                ball.style.transform = 'scale(1)';
+            });
+            
+            // AUTO REMOVE TIMER
+            const removeTimer = setTimeout(() => {
+                if(ball && ball.parentNode) {
+                    ball.style.transform = 'scale(0)';
+                    setTimeout(() => { if(ball.parentNode) ball.remove(); }, 200);
+                }
+            }, lifeTime);
+
+            ball.onclick = (e) => {
+                e.stopPropagation(); // Prevent issues
+                clearTimeout(removeTimer); // Stop auto-remove
+                
+                if (type === 'bomb') {
+                    gameScore = Math.max(0, gameScore - 5);
+                    // Shake effect on container
+                    const container = document.getElementById('minigame-container');
+                    container.classList.add('animate-shake');
+                    setTimeout(()=>container.classList.remove('animate-shake'), 500);
+                } else if (type === 'gold') {
+                    gameScore += 5;
+                    gameTime += 5; // Bonus time!
+                    const timerEl = document.getElementById('game-timer');
+                    if(timerEl) timerEl.innerText = gameTime;
+                } else {
+                    gameScore++;
+                }
+
+                const scoreEl = document.getElementById('game-score');
+                if(scoreEl) scoreEl.innerText = gameScore;
+                
+                // Pop effect
+                ball.style.transform = "scale(1.5)";
+                ball.style.opacity = "0";
+                setTimeout(() => ball.remove(), 200);
+                
+                // Immediately try to spawn another one
+                // setTimeout(spawnBall, 200); 
+            };
+            
+            area.appendChild(ball);
+
+            // Schedule next spawn randomly
+            const nextSpawnTime = Math.random() * 800 + 400; // 0.4s - 1.2s
+            setTimeout(spawnBall, nextSpawnTime);
+        }
+
+        function endMiniGame() {
+            clearInterval(gameInterval);
+            // Clear balls
+            const area = document.getElementById('game-area');
+            if(area) area.innerHTML = '';
+
+            const reward = Math.floor(gameScore * 2);
+            APP_STATE.cat.coins += reward;
+            updateCatStats({ energy: -10, mood: 20 });
+            saveState(); // Persist game rewards 
+            
+            // Show Result Screen
+            const container = document.getElementById('minigame-container');
+            container.innerHTML = `
+                <div class="absolute inset-0 z-20 bg-slate-900 flex flex-col items-center justify-center text-center p-6 animate-fade-in">
+                    <div class="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4 ring-4 ring-emerald-500/40">
+                        <span class="text-4xl">🎉</span>
+                    </div>
+                    <h3 class="text-3xl font-black text-white mb-2">Час вийшов!</h3>
+                    <p class="text-slate-400 mb-6">Ти справжній хижак!</p>
+
+                    <div class="grid grid-cols-2 gap-4 w-full mb-6">
+                        <div class="bg-slate-800 p-4 rounded-2xl">
+                            <div class="text-xs text-slate-500 uppercase font-bold">Рахунок</div>
+                            <div class="text-2xl text-white font-black">${gameScore}</div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-2xl border border-yellow-500/30">
+                            <div class="text-xs text-yellow-500 uppercase font-bold">Заробіток</div>
+                            <div class="text-2xl text-yellow-400 font-black">+${reward} 💰</div>
+                        </div>
+                    </div>
+
+                    <button onclick="closeMiniGame()" class="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-all">
+                        Забрати нагороду
+                    </button>
+                </div>
+            `;
+            renderProfile(document.getElementById('app-content'));
+        }
+
+        function closeMiniGame() {
+            clearInterval(gameInterval);
+            const modal = document.getElementById('minigame-modal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none'; // Force hide
+            // Update profile view if we're on profile tab
+            if (APP_STATE.view === 'profile') {
+                renderProfile(document.getElementById('app-content'));
+                lucide.createIcons();
+            }
+        }
+
+
+        // --- RENDERERS (Updated) ---
+
+        function getDifficultyStyles(level) {
+            switch(level) {
+                case 'EASY': return { bg: 'bg-emerald-100', text: 'text-emerald-600', label: 'Easy' };
+                case 'MEDIUM': return { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Medium' };
+                case 'HARD': return { bg: 'bg-red-100', text: 'text-red-600', label: 'Hard' };
+                case 'EXPERT': return { bg: 'bg-purple-100', text: 'text-purple-600', label: 'Expert' };
+                default: return { bg: 'bg-slate-100', text: 'text-slate-500', label: 'Normal' };
+            }
+        }
+
+        function renderDashboard(container, animate = false) {
+            const myUser = DATA.leaderboard.find(u => u.id === 3);
+            let nextPrize = DATA.prizes.slice().reverse().find(p => myUser.rank <= p.rankRange[1] && myUser.rank > p.rankRange[0]);
+            // If already top 1
+            if(myUser.rank === 1) nextPrize = { title: 'Ви Король!', rankRange: [1, 1] };
+            else if(!nextPrize) nextPrize = DATA.prizes[DATA.prizes.length - 1]; // Lowest tier
+
+            // --- TREE CALCULATIONS ---
+            const treeStage = getTreeStage(APP_STATE.xp);
+            const treeProgress = getTreeProgress(APP_STATE.xp);
+            const isTop3 = myUser.rank <= 3;
+            const weather = getWeather(APP_STATE.lastActiveDate, isTop3, APP_STATE.isReturning);
+            const streak = getStreakMultiplier(APP_STATE.streakDays);
+
+            // Tree animation class based on stage
+            let treeAnimClass = 'animate-tree-sway';
+            if (treeStage.id === 'seed') treeAnimClass = '';
+            if (treeStage.id === 'golden') treeAnimClass = 'animate-golden';
+
+            // Weather affects tree saturation
+            const treeSaturation = (weather.id === 'rain' || weather.id === 'storm') ? 'saturate-50' : '';
+
+            let html = `
+                <div class="${animate ? 'animate-fade-in' : ''} max-w-4xl mx-auto space-y-8">
+                    <header>
+                        <h1 class="text-3xl font-extrabold text-slate-900">Привіт, Партнере! 👋</h1>
+                        <p class="text-slate-500 mt-2">Ось твій прогрес на сьогодні.</p>
+                    </header>
+
+                    <!-- GROWTH TREE SECTION -->
+                    <div class="bg-gradient-to-b ${treeStage.bgGradient} rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
+                        <!-- Weather Icon -->
+                        <div class="absolute top-4 right-4 text-4xl ${weather.animation}" title="${weather.name}">
+                            ${weather.icon}
+                        </div>
+
+                        <!-- Streak Badge -->
+                        ${streak.multiplier > 1 ? `
+                            <div class="absolute top-4 left-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                ${streak.label} Бонус ×${streak.multiplier}
+                            </div>
+                        ` : ''}
+
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <!-- Tree Visual -->
+                            <div class="text-center">
+                                <div class="text-8xl md:text-9xl ${treeAnimClass} ${treeSaturation} transition-all duration-500 select-none">
+                                    ${treeStage.icon}
+                                </div>
+                            </div>
+
+                            <!-- Tree Info -->
+                            <div class="flex-1 text-center md:text-left">
+                                <h3 class="text-2xl font-black text-slate-800 mb-1">${treeStage.name}</h3>
+                                <p class="text-sm text-slate-500 mb-4">Ваше дерево росте разом з вашим бізнесом</p>
+
+                                <!-- Progress Bar -->
+                                <div class="max-w-md">
+                                    <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                        <span class="font-bold">${treeProgress.current} XP</span>
+                                        <span>${treeProgress.nextStage ? treeProgress.target + ' XP' : 'MAX'}</span>
+                                    </div>
+                                    <div class="h-3 bg-white/60 rounded-full overflow-hidden shadow-inner">
+                                        <div class="h-full rounded-full transition-all duration-500" style="width: ${treeProgress.percent}%; background-color: ${treeStage.color}"></div>
+                                    </div>
+                                    ${treeProgress.remaining > 0 ? `
+                                        <p class="text-xs text-slate-500 mt-2">До наступної стадії: <strong>${treeProgress.remaining} XP</strong></p>
+                                    ` : `
+                                        <p class="text-xs text-emerald-600 font-bold mt-2 flex items-center gap-1">
+                                            <i data-lucide="crown" class="w-3 h-3"></i> Максимальний рівень!
+                                        </p>
+                                    `}
+                                </div>
+
+                                <!-- Mini stages preview -->
+                                <div class="flex gap-2 mt-4 flex-wrap justify-center md:justify-start">
+                                    ${TREE_STAGES.map(s => `
+                                        <div class="text-center ${APP_STATE.xp >= s.minXP ? 'opacity-100' : 'opacity-30'} transition-opacity">
+                                            <div class="text-xl ${s.id === treeStage.id ? 'ring-2 ring-emerald-500 ring-offset-2 rounded-lg' : ''}">${s.icon}</div>
+                                            <p class="text-[9px] font-bold text-slate-500">${s.minXP}+</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATS ROW -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center">
+                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">Ранг</div>
+                            <div class="text-xl font-black text-emerald-600 flex items-center justify-center gap-1">
+                                #${myUser.rank} <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center">
+                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">Серія</div>
+                            <div class="text-xl font-black text-orange-500">${APP_STATE.streakDays} днів</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center">
+                            <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">Погода</div>
+                            <div class="text-xl">${weather.icon} <span class="text-sm font-bold text-slate-600">${weather.name}</span></div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm text-center quest-gradient text-white">
+                            <div class="text-emerald-100 text-[10px] font-bold uppercase tracking-wider mb-1">Ціль</div>
+                            <div class="text-lg font-black">Топ-${nextPrize.rankRange[0] > 1 ? nextPrize.rankRange[0]-1 : 1}</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                            <h2 class="font-bold text-lg flex items-center gap-2">
+                                <i data-lucide="list-checks" class="text-emerald-500"></i> Щоденний Lead Flow
+                            </h2>
+                            <span class="text-xs bg-slate-100 text-slate-500 font-bold px-2 py-1 rounded-lg">Скидається о 00:00</span>
+                        </div>
+                        <div class="divide-y divide-slate-50">
+                            ${APP_STATE.dailyTasks.map(task => `
+                                <div onclick="toggleDailyTask('${task.id}')" class="p-4 flex items-center gap-4 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                    <div class="${task.completed ? 'bg-emerald-500 border-emerald-500' : 'bg-white border-slate-300'} w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all">
+                                        ${task.completed ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-sm ${task.completed ? 'text-slate-400 line-through' : 'text-slate-700'}">${task.title}</p>
+                                    </div>
+                                    <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">+${task.xp} XP</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- SHOP SECTION (UPDATED with Highlight Logic) -->
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+                         <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                            <h2 class="font-bold text-lg flex items-center gap-2">
+                                <i data-lucide="shopping-bag" class="text-purple-500"></i> Обмін Балів
+                            </h2>
+                            <span class="text-xs bg-slate-100 text-slate-500 font-bold px-2 py-1 rounded-lg">Витрачай XP</span>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${DATA.shop.map(item => {
+                                const isPurchased = APP_STATE.purchasedItems.includes(item.id);
+                                return `
+                                <div class="border ${isPurchased ? 'border-emerald-400 bg-emerald-50' : 'border-slate-200'} rounded-2xl p-4 flex items-center gap-4 hover:border-purple-200 hover:shadow-md transition-all">
+                                    <div class="w-16 h-16 bg-purple-50 rounded-xl flex items-center justify-center text-purple-500">
+                                        <i data-lucide="${item.image}" class="w-8 h-8"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-slate-800 text-sm">${item.title}</h4>
+                                        <p class="text-xs text-slate-500 mt-1">${isPurchased ? 'Замовлено' : 'Отримати безкоштовно'}</p>
+                                    </div>
+                                    <button onclick="buyItem('${item.id}', ${item.price})" ${isPurchased ? 'disabled' : ''} class="px-4 py-2 ${isPurchased ? 'bg-emerald-500 cursor-default' : 'bg-slate-900 hover:bg-slate-700'} text-white text-xs font-bold rounded-lg whitespace-nowrap">
+                                        ${isPurchased ? 'Куплено' : item.price + ' XP'}
+                                    </button>
+                                </div>
+                            `}).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function buyItem(id, price) {
+            // Check if already bought
+            if(APP_STATE.purchasedItems.includes(id)) return;
+
+            if (spendXP(price)) {
+                APP_STATE.purchasedItems.push(id);
+                showToast("Товар замовлено! Менеджер зв'яжеться.");
+                // Re-render to show highlight
+                renderDashboard(document.getElementById('app-content'), false);
+                lucide.createIcons();
+            } else {
+                showToast("Недостатньо XP!", true);
+            }
+        }
+
+        function toggleDailyTask(taskId) {
+            const task = APP_STATE.dailyTasks.find(t => t.id === taskId);
+            if (task && !task.completed) {
+                task.completed = true;
+
+                // Update streak and activity tracking
+                updateActivityStreak();
+
+                addXP(task.xp);
+                saveState(); // Persist daily task completion
+                renderDashboard(document.getElementById('app-content'), false);
+                lucide.createIcons();
+            }
+        }
+
+        // --- STREAK MANAGEMENT ---
+        function updateActivityStreak() {
+            const now = new Date();
+            const today = now.toDateString();
+            const lastActive = new Date(APP_STATE.lastActiveDate);
+            const lastActiveDay = lastActive.toDateString();
+
+            // If already active today, do nothing
+            if (today === lastActiveDay) return;
+
+            // Calculate days since last activity
+            const diffTime = Math.abs(now - lastActive);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                // Consecutive day - increase streak
+                APP_STATE.streakDays++;
+                APP_STATE.isReturning = false;
+            } else if (diffDays > 1 && diffDays <= 3) {
+                // Small gap - reset streak but no rainbow
+                APP_STATE.streakDays = 1;
+                APP_STATE.isReturning = false;
+            } else if (diffDays > 3) {
+                // Returning after long pause - show rainbow
+                APP_STATE.streakDays = 1;
+                APP_STATE.isReturning = true;
+                // Rainbow shows only once
+                setTimeout(() => {
+                    APP_STATE.isReturning = false;
+                    saveState();
+                }, 5000);
+            }
+
+            APP_STATE.lastActiveDate = now.toISOString();
+            saveState();
+        }
+
+        function renderEventList(container, animate = false) {
+             let html = `
+                <div class="${animate ? 'animate-fade-in' : ''} max-w-4xl mx-auto pb-10">
+                    <header class="text-center mb-10">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Доступні Події</h2>
+                        <p class="text-slate-500">Оберіть програму для участі</p>
+                    </header>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Active Event Card -->
+                        <div onclick="openAgreementModal('intensive-2026')" class="bg-white rounded-3xl p-6 border-2 border-emerald-100 hover:border-emerald-400 cursor-pointer shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl z-10">АКТИВНО</div>
+                            <div class="absolute top-0 left-0 w-full h-2 quest-gradient"></div>
+                            
+                            <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center mb-4 text-emerald-600 group-hover:scale-110 transition-transform">
+                                <i data-lucide="rocket" class="w-6 h-6"></i>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Практикум Інтенсив 2.0 2026</h3>
+                            <p class="text-sm text-slate-500 mb-4">5-денна програма для швидкого старту та масштабування вашого бізнесу.</p>
+                            
+                            <div class="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> до 01.04.2026</span>
+                                <span class="flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i> 124 учасника</span>
+                            </div>
+                        </div>
+
+                        <!-- Locked Event Card -->
+                        <div class="bg-slate-50 rounded-3xl p-6 border border-slate-200 opacity-60 relative overflow-hidden">
+                             <div class="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                                <span class="bg-slate-200 text-slate-500 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1"><i data-lucide="lock" class="w-3 h-3"></i> СКОРО</span>
+                            </div>
+                            <div class="w-12 h-12 bg-slate-200 rounded-2xl flex items-center justify-center mb-4 text-slate-400">
+                                <i data-lucide="crown" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Лідерський Саміт</h3>
+                            <p class="text-sm text-slate-500 mb-4">Ексклюзивна подія для топ-лідерів компанії.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function renderQuests(container, animate = false) {
+            let html = `
+                <div class="${animate ? 'animate-fade-in' : ''} max-w-4xl mx-auto pb-10">
+                     <header class="text-center mb-10">
+                        <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold mb-2 cursor-pointer hover:bg-emerald-100" onclick="APP_STATE.selectedEvent=null; switchView('quests')">
+                            <i data-lucide="arrow-left" class="w-3 h-3"></i> Практикум Інтенсив 2.0
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Ваші кроки в програмі</h2>
+                        <p class="text-slate-500">"Практикум Інтенсив 2.0 2026"</p>
+                    </header>
+                    
+                    <div class="relative">
+                        <!-- Central Line (Tree Trunk) -->
+                        <div class="absolute left-6 md:left-1/2 top-4 bottom-4 w-1 bg-slate-200 -ml-0.5 rounded-full z-0"></div>
+            `;
+
+            APP_STATE.quests.forEach((stage, idx) => {
+                const completedCount = stage.missions.filter(m => m.isCompleted).length;
+                const totalCount = stage.missions.length;
+                const progress = (completedCount / totalCount) * 100;
+                const isDone = progress === 100;
+
+                const isLeft = idx % 2 === 0;
+                
+                const wrapperClass = `relative z-10 flex flex-col md:flex-row items-center md:justify-between mb-12 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`;
+                const cardWrapperClass = `w-full md:w-5/12 pl-16 md:pl-0`;
+                const cardInnerClass = `bg-white rounded-3xl border p-6 shadow-sm transition-all hover:shadow-lg ${isDone ? 'border-emerald-400 ring-2 ring-emerald-100' : 'border-slate-200'}`;
+                
+                const dotClass = `
+                    absolute left-6 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-4 flex items-center justify-center z-20 
+                    ${isDone ? 'bg-emerald-500 border-emerald-100 text-white' : 'bg-white border-slate-200 text-slate-400'}
+                `;
+
+                html += `
+                    <div class="${wrapperClass}">
+                        <div class="${dotClass}">
+                             ${isDone ? '<i data-lucide="check" class="w-4 h-4"></i>' : `<span class="text-xs font-bold">${idx + 1}</span>`}
+                        </div>
+                        <div class="hidden md:block md:w-5/12"></div>
+                        <div class="${cardWrapperClass}">
+                            <div class="${cardInnerClass}">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div>
+                                        <span class="text-[10px] font-bold uppercase tracking-wider ${isDone ? 'text-emerald-600 bg-emerald-50 px-2 py-1 rounded' : 'text-slate-400'}">${stage.title}</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-black ${isDone ? 'text-emerald-600' : 'text-slate-300'}">${Math.round(progress)}%</span>
+                                    </div>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden mb-6">
+                                    <div class="h-full bg-emerald-500 transition-all duration-500" style="width: ${progress}%"></div>
+                                </div>
+                                <div class="space-y-3">
+                                    ${stage.missions.map(mission => `
+                                        <div onclick="requestMissionComplete(${stage.week}, '${mission.id}', this)" class="group flex items-start gap-3 p-3 rounded-2xl cursor-pointer border transition-all ${mission.isCompleted ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100 hover:border-emerald-200'}">
+                                            <div class="mt-0.5 ${mission.isCompleted ? 'text-emerald-500' : 'text-slate-300 group-hover:text-emerald-400'}">
+                                                <i data-lucide="${mission.isCompleted ? 'check-circle-2' : 'circle'}" class="w-5 h-5"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex justify-between">
+                                                    <p class="text-sm font-bold ${mission.isCompleted ? 'text-emerald-900 line-through opacity-50' : 'text-slate-700'}">${mission.title}</p>
+                                                    <span class="text-[10px] font-black whitespace-nowrap px-2 py-0.5 rounded ml-2 ${mission.isCompleted ? 'bg-emerald-200 text-emerald-700' : 'bg-white border text-slate-500'}">+${mission.xpReward}</span>
+                                                </div>
+                                                <p class="text-xs text-slate-500 mt-1">${mission.description}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML = html;
+        }
+
+        function setSimMode(mode) {
+            APP_STATE.simMode = mode;
+            renderSimulatorSelector(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        function renderSimulatorSelector(container) {
+            const isOutbound = APP_STATE.simMode === 'OUTBOUND';
+            const candidates = isOutbound ? DATA.scenarios.OUTBOUND : DATA.scenarios.INBOUND;
+
+            let html = `
+                <div class="animate-fade-in max-w-4xl mx-auto">
+                    <header class="text-center mb-8">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Симулятор діалогів</h2>
+                        <p class="text-slate-500 mb-6">Тренуйся рекрутувати на віртуальних кандидатах (AI)</p>
+                        <div class="inline-flex bg-slate-100 p-1 rounded-xl shadow-inner border border-slate-200">
+                            <button onclick="setSimMode('INBOUND')" class="px-6 py-2 rounded-lg text-sm font-bold transition-all ${!isOutbound ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">Вам написали</button>
+                            <button onclick="setSimMode('OUTBOUND')" class="px-6 py-2 rounded-lg text-sm font-bold transition-all ${isOutbound ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">Ви пишете самі</button>
+                        </div>
+                    </header>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+                        ${candidates.map(c => {
+                            const styles = getDifficultyStyles(c.difficulty);
+                            return `
+                            <div onclick="startSimulation('${c.id}')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
+                                        <i data-lucide="${c.icon}" class="w-6 h-6"></i>
+                                    </div>
+                                    <span class="text-[10px] font-black px-2 py-1 rounded ${styles.bg} ${styles.text} uppercase tracking-wider">${styles.label}</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">${c.name}</h3>
+                                <p class="text-xs font-bold text-slate-400 uppercase mb-2 tracking-wide">${c.type}</p>
+                                <p class="text-sm text-slate-600 leading-relaxed mb-3">${c.description}</p>
+                                ${c.context ? `<p class="text-xs bg-slate-50 text-slate-500 p-2 rounded-lg border border-slate-100 italic">💡 ${c.context}</p>` : ''}
+                            </div>
+                        `}).join('')}
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function startSimulation(candidateId) {
+            const isOutbound = APP_STATE.simMode === 'OUTBOUND';
+            const candidates = isOutbound ? DATA.scenarios.OUTBOUND : DATA.scenarios.INBOUND;
+            const candidate = candidates.find(c => c.id === candidateId);
+            APP_STATE.currentCandidate = candidate;
+            APP_STATE.chatHistory = isOutbound ? [] : [{ role: 'model', parts: [{ text: candidate.startMsg }] }];
+            renderChatInterface();
+        }
+
+        function renderChatInterface() {
+            const container = document.getElementById('app-content');
+            const candidate = APP_STATE.currentCandidate;
+            const isOutbound = APP_STATE.simMode === 'OUTBOUND';
+
+            let chatHtml = `
+                <div class="h-full flex flex-col max-w-2xl mx-auto animate-fade-in relative">
+                    <div class="bg-white p-4 rounded-t-3xl border-b border-slate-100 flex items-center justify-between shadow-sm z-10">
+                        <div class="flex items-center gap-3">
+                            <button onclick="switchView('simulator')" class="p-2 hover:bg-slate-100 rounded-full transition-colors"><i data-lucide="chevron-left"></i></button>
+                            <div>
+                                <h3 class="font-bold text-slate-800">${candidate.name}</h3>
+                                <p class="text-xs text-emerald-600 font-bold flex items-center gap-1"><span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Online</p>
+                            </div>
+                        </div>
+                        <button onclick="finishSimulation()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors">Завершити</button>
+                    </div>
+                    <div id="chat-box" class="flex-1 bg-white overflow-y-auto p-4 space-y-4">
+                        ${isOutbound && APP_STATE.chatHistory.length === 0 ? `
+                             <div class="text-center py-8">
+                                <div class="bg-emerald-50 text-emerald-800 p-4 rounded-2xl text-sm inline-block max-w-xs mx-auto border border-emerald-100 shadow-sm">
+                                    <p class="font-bold mb-1">Порада для старту:</p>
+                                    <p class="italic opacity-80 mb-2">"${candidate.context}"</p>
+                                    <p>Спробуйте написати: "Привіт, дякую за лайк! Цікавитесь темою здоров'я?"</p>
+                                </div>
+                             </div>
+                        ` : ''}
+                        ${renderMessages(APP_STATE.chatHistory)}
+                    </div>
+                    <div class="bg-white p-4 border-t border-slate-100 rounded-b-3xl">
+                        <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                            <input type="text" id="chat-input" placeholder="Напиши повідомлення..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-colors" autocomplete="off">
+                            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white p-3 rounded-xl transition-colors shadow-lg shadow-emerald-100">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div id="analysis-modal" class="hidden absolute inset-0 bg-white/95 z-50 rounded-3xl backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center animate-fade-in">
+                        <div id="analysis-content" class="w-full max-w-md">
+                            <div class="flex gap-1 justify-center py-10">
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full loading-dot"></div>
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full loading-dot"></div>
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full loading-dot"></div>
+                            </div>
+                            <p class="text-slate-500 font-bold mt-4">AI-ментор аналізує діалог...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = chatHtml;
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        function renderMessages(history) {
+            return history.map(msg => {
+                const isUser = msg.role === 'user';
+                const text = msg.parts[0].text;
+                return `
+                    <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed ${isUser ? 'bg-emerald-500 text-white rounded-tr-none shadow-md shadow-emerald-100' : 'bg-slate-50 text-slate-700 border border-slate-100 rounded-tl-none'}">
+                            ${text}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function scrollToBottom() {
+            const chatBox = document.getElementById('chat-box');
+            if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+            APP_STATE.chatHistory.push({ role: 'user', parts: [{ text: text }] });
+            inputEl.value = '';
+            const chatBox = document.getElementById('chat-box');
+            if(APP_STATE.chatHistory.length === 1 && APP_STATE.simMode === 'OUTBOUND') {
+                 renderChatInterface();
+                 return handleChatSubmitAI();
+            }
+            const messagesHTML = renderMessages(APP_STATE.chatHistory);
+            const loadingHTML = `<div id="loading-indicator" class="flex gap-1 p-4 bg-slate-50 w-fit rounded-2xl rounded-tl-none"><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div>`;
+            chatBox.innerHTML = messagesHTML + loadingHTML;
+            scrollToBottom();
+            await handleChatSubmitAI();
+        }
+        
+        async function handleChatSubmitAI() {
+            try {
+                const responseText = await callGeminiChat(APP_STATE.chatHistory, APP_STATE.currentCandidate);
+                addBotResponse(responseText);
+            } catch (err) {
+                console.error(err);
+                let errorMsg = "Помилка з'єднання з AI.";
+                if (err.message === 'NO_API_KEY') {
+                    errorMsg = "Введіть API ключ в налаштуваннях (шестерінка вгорі).";
+                } else if (err.message === 'API_KEY_INVALID') {
+                    errorMsg = "Невірний API ключ. Перевірте налаштування.";
+                } else if (err.message === 'RATE_LIMIT') {
+                    errorMsg = "Ліміт запитів вичерпано. Спробуйте через хвилину.";
+                } else if (err.message === 'INVALID_RESPONSE') {
+                    errorMsg = "AI не зміг відповісти. Спробуйте ще раз.";
+                }
+                addBotResponse(errorMsg);
+            }
+        }
+
+        function addBotResponse(text) {
+            APP_STATE.chatHistory.push({ role: 'model', parts: [{ text: text }] });
+            renderChatInterface();
+        }
+
+        // Універсальна функція для виклику Gemini API
+        async function callGeminiAPI(contents) {
+            let response;
+            let useProxy = false;
+
+            // Спробувати Netlify Function (якщо на продакшені)
+            try {
+                response = await fetch('/.netlify/functions/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents })
+                });
+
+                // Якщо функція існує і працює (status 200-299)
+                if (response.ok) {
+                    useProxy = true;
+                }
+            } catch (e) {
+                // Функція недоступна або помилка мережі, використаємо локальний ключ
+                useProxy = false;
+            }
+
+            // Fallback на локальний API ключ, якщо Netlify Function не спрацювала
+            if (!useProxy) {
+                if (!APP_STATE.apiKey) {
+                    throw new Error('NO_API_KEY');
+                }
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${APP_STATE.apiKey}`;
+                response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents })
+                });
+            }
+
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    throw new Error('API_KEY_INVALID');
+                }
+                if (response.status === 429) {
+                    throw new Error('RATE_LIMIT');
+                }
+                if (response.status === 500) {
+                     // Check if it was our proxy returning a specific error
+                    const errData = await response.json().catch(() => ({}));
+                    if (errData.error === 'API key not configured') {
+                        throw new Error('NO_API_KEY');
+                    }
+                }
+                throw new Error('NETWORK_ERROR');
+            }
+
+            const data = await response.json();
+            if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+                throw new Error('INVALID_RESPONSE');
+            }
+
+            return data;
+        }
+
+        async function callGeminiChat(history, candidate) {
+            const systemPrompt = `
+                Ти граєш роль людини в симуляторі MLM. Ім'я: ${candidate.name}, тип: ${candidate.type}, складність: ${candidate.difficulty}.
+                Контекст: ${candidate.context || "Відповідь на сторіс"}.
+                Інструкція: Відповідай коротко (1-3 речення). Мова: Українська.
+            `;
+            const contents = [{ role: "user", parts: [{ text: systemPrompt }] }, ...history];
+            const data = await callGeminiAPI(contents);
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        async function finishSimulation() {
+            const modal = document.getElementById('analysis-modal');
+            modal.classList.remove('hidden');
+
+            try {
+                const transcript = APP_STATE.chatHistory.map(m => `${m.role === 'user' ? 'Партнер' : 'Кандидат'}: ${m.parts[0].text}`).join('\n');
+                const prompt = `Проаналізуй діалог MLM (Українська). Діалог:\n${transcript}\nJSON формат: {"score": 1-10, "feedback": ["3 поради"]}`;
+                const contents = [{ parts: [{ text: prompt }] }];
+
+                const data = await callGeminiAPI(contents);
+                const textRes = data.candidates[0].content.parts[0].text;
+                const cleanJson = textRes.replace(/```json/g, '').replace(/```/g, '').trim();
+
+                let result;
+                try {
+                    result = JSON.parse(cleanJson);
+                    // Validate structure
+                    if (typeof result.score !== 'number' || !Array.isArray(result.feedback)) {
+                        throw new Error('Invalid JSON structure');
+                    }
+                } catch (parseErr) {
+                    // Fallback if JSON parsing fails
+                    result = { score: 5, feedback: ["Аналіз не вдався. Спробуйте коротший діалог."] };
+                }
+
+                renderAnalysisResult(result);
+                if(result.score >= 7) addXP(30);
+            } catch (err) {
+                console.error('Analysis error:', err);
+                let feedback = ["Помилка аналізу. Спробуйте пізніше."];
+                if (err.message === 'NO_API_KEY') {
+                    feedback = ["Введіть API ключ в налаштуваннях (шестерінка вгорі)."];
+                } else if (err.message === 'API_KEY_INVALID') {
+                    feedback = ["Невірний API ключ. Перевірте налаштування."];
+                }
+                renderAnalysisResult({ score: 0, feedback });
+            }
+        }
+
+        function renderAnalysisResult(result) {
+            const container = document.getElementById('analysis-content');
+            container.innerHTML = `
+                <div class="animate-in zoom-in-95 duration-500">
+                    <div class="w-24 h-24 ${result.score >= 7 ? 'bg-emerald-500' : 'bg-amber-500'} rounded-full flex items-center justify-center text-white mx-auto mb-6 shadow-lg shadow-emerald-100 ring-4 ring-white">
+                        <i data-lucide="${result.score >= 7 ? 'award' : 'activity'}" class="w-12 h-12"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-800 mb-2">Оцінка: ${result.score}/10</h2>
+                    <div class="bg-slate-50 rounded-2xl p-6 text-left mb-8 space-y-3 border border-slate-100">
+                        ${result.feedback.map(f => `<div class="flex gap-3 text-sm text-slate-700"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 flex-shrink-0"></i><span>${f}</span></div>`).join('')}
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="switchView('simulator')" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors">Меню</button>
+                        <button onclick="startSimulation('${APP_STATE.currentCandidate.id}')" class="flex-1 bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 shadow-lg shadow-emerald-100 transition-transform hover:scale-[1.02]">Ще раз</button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function setLeaderboardTab(tabName) {
+            APP_STATE.leaderboardTab = tabName;
+            renderLeaderboard(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        function setLeaderboardScope(scope) {
+            APP_STATE.leaderboardScope = scope;
+            renderLeaderboard(document.getElementById('app-content'));
+            lucide.createIcons();
+        }
+
+        function renderLeaderboard(container) {
+            // Re-calc rank just in case
+            recalcRank();
+            const myUser = DATA.leaderboard.find(u => u.id === 3);
+            const myRank = myUser.rank;
+            const scope = APP_STATE.leaderboardScope;
+
+            let headerTitle = "Практикум-Інтенсив 2.0";
+            let headerDesc = "Завершення 01.04.2026 (через 2 міс)";
+            let isFinished = false;
+
+            if (scope === 'GLOBAL') {
+                headerTitle = "Загальний Рейтинг";
+                headerDesc = "Топ партнерів за весь час";
+            } else if (scope === 'HISTORY') {
+                headerTitle = "Зимовий Спринт 2025";
+                headerDesc = "Завершено 31.12.2025";
+                isFinished = true;
+            }
+
+            let html = `
+                <div class="animate-fade-in max-w-2xl mx-auto">
+                    <header class="text-center mb-8">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Турнірна Таблиця</h2>
+                        
+                        <!-- SCOPE TABS -->
+                        <div class="flex justify-center gap-2 mb-6 flex-wrap">
+                            <button onclick="setLeaderboardScope('GLOBAL')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'GLOBAL' ? 'bg-slate-800 text-white shadow-lg' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200'}">
+                                🌍 Загальний
+                            </button>
+                            <button onclick="setLeaderboardScope('EVENT')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'EVENT' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200'}">
+                                🔥 Практикум
+                            </button>
+                             <button onclick="setLeaderboardScope('HISTORY')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${scope === 'HISTORY' ? 'bg-blue-500 text-white shadow-lg shadow-blue-200' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-200'}">
+                                🏁 Зимовий Спринт
+                            </button>
+                        </div>
+
+                        <div class="bg-white px-6 py-4 rounded-2xl inline-block mb-6 border border-slate-100 shadow-sm relative overflow-hidden">
+                            ${isFinished ? '<div class="absolute top-0 right-0 bg-slate-200 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">ARCHIVED</div>' : ''}
+                            <p class="text-xs font-bold uppercase tracking-wider mb-1 text-slate-400">Подія</p>
+                            <p class="font-bold text-lg text-slate-800">${headerTitle}</p>
+                            <p class="text-xs mt-1 ${isFinished ? 'text-red-500 font-bold' : 'text-emerald-600'} flex items-center justify-center gap-1">
+                                <i data-lucide="${isFinished ? 'flag' : 'clock'}" class="inline w-3 h-3"></i> ${headerDesc}
+                            </p>
+                            
+                            ${isFinished ? `
+                                <button onclick="claimPrize()" class="mt-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-6 py-2 rounded-lg shadow-lg hover:scale-105 transition-transform animate-pulse">
+                                    🎁 Отримати нагороду
+                                </button>
+                            ` : ''}
+                        </div>
+                        
+                        <!-- VIEW TABS -->
+                        <div class="flex justify-center">
+                            <div class="inline-flex bg-slate-100 p-1 rounded-xl shadow-inner border border-slate-200">
+                                <button onclick="setLeaderboardTab('RANKING')" class="px-6 py-2 rounded-lg text-sm font-bold transition-all ${APP_STATE.leaderboardTab === 'RANKING' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">
+                                    Топ Гравців
+                                </button>
+                                <button onclick="setLeaderboardTab('PRIZES')" class="px-6 py-2 rounded-lg text-sm font-bold transition-all ${APP_STATE.leaderboardTab === 'PRIZES' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}">
+                                    Призовий Фонд
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+            `;
+
+            if (APP_STATE.leaderboardTab === 'RANKING') {
+                html += `
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                        ${DATA.leaderboard.slice(0, 50).map((user, idx) => {
+                            const isMe = user.id === 3;
+                            let rankStyle = 'text-slate-500 bg-slate-100';
+                            let icon = '';
+                            
+                            // Mock Data Variation for different scopes
+                            let displayXP = user.xp;
+                            if (scope === 'GLOBAL') displayXP = Math.round(user.xp * 2.5 + 1500); 
+                            if (scope === 'HISTORY') displayXP = Math.round(user.xp * 0.8); 
+
+                            if(idx === 0) { rankStyle = 'gold-gradient text-white shadow-lg shadow-amber-200'; icon = '👑'; }
+                            else if(idx === 1) { rankStyle = 'silver-gradient text-white shadow-lg shadow-slate-300'; icon = '🥈'; }
+                            else if(idx === 2) { rankStyle = 'bronze-gradient text-white shadow-lg shadow-orange-200'; icon = '🥉'; }
+
+                            return `
+                                <div class="flex items-center gap-4 p-4 border-b border-slate-50 ${isMe ? 'bg-emerald-50/50' : ''}">
+                                    <div class="w-10 h-10 ${rankStyle} rounded-xl flex items-center justify-center font-black text-sm relative">
+                                        ${icon || idx + 1}
+                                    </div>
+                                    <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 border border-slate-200">
+                                        <i data-lucide="user" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-slate-800 flex items-center gap-2">
+                                            ${user.name} 
+                                            ${isMe ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full uppercase shadow-sm">Ви</span>' : ''}
+                                        </p>
+                                    </div>
+                                    <div class="font-black text-emerald-600 text-sm bg-emerald-50 px-3 py-1 rounded-lg">${displayXP} XP</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            } else {
+                // PRIZES TAB
+                html += `<div class="space-y-4 pb-20">`;
+                
+                // MOCK PRIZES VARIATION
+                const currentPrizes = scope === 'GLOBAL' ? [
+                     { rankRange: [1, 1], title: 'Легенда Бріонель', items: ['Автомобіль', 'Поїздка на Мальдіви'], color: 'gold-gradient' },
+                     { rankRange: [2, 10], title: 'Топ Лідер', items: ['MacBook Pro', 'Iphone 16'], color: 'silver-gradient' }
+                ] : DATA.prizes;
+
+                const prizesToShow = scope === 'HISTORY' ? DATA.prizes : currentPrizes;
+
+                prizesToShow.forEach(prize => {
+                    const isActive = myRank >= prize.rankRange[0] && myRank <= prize.rankRange[1];
+                    // Visual logic
+                    let cardClass = `relative bg-white rounded-3xl p-6 border shadow-sm transition-all overflow-hidden group`;
+                    if (isActive && scope !== 'HISTORY') {
+                        cardClass += ` border-emerald-500 ring-4 ring-emerald-500/20 bg-emerald-50`;
+                    } else if (scope === 'HISTORY') {
+                        cardClass += ` border-slate-200 opacity-80`; // Dimmed for history
+                    } else {
+                        cardClass += ` border-slate-200`;
+                    }
+
+                    // Badge color logic
+                    let badgeClass = prize.color.includes('gradient') ? prize.color + ' text-white shadow-lg' : prize.color + ' text-slate-600';
+
+                    html += `
+                        <div class="${cardClass}">
+                            ${isActive && scope !== 'HISTORY' ? '<div class="absolute top-4 right-4 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg animate-pulse flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> ВИ ТУТ</div>' : ''}
+                            ${scope === 'HISTORY' && isActive ? '<div class="absolute top-4 right-4 bg-yellow-500 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1"><i data-lucide="award" class="w-3 h-3"></i> ВИ ОТРИМАЛИ</div>' : ''}
+                            
+                            <div class="flex items-start gap-4">
+                                <div class="w-16 h-16 ${badgeClass} rounded-2xl flex flex-col items-center justify-center flex-shrink-0 border border-white/20">
+                                    <span class="text-[10px] font-bold uppercase opacity-80">Місце</span>
+                                    <span class="text-xl font-black leading-none">${prize.rankRange[0] === prize.rankRange[1] ? prize.rankRange[0] : prize.rankRange[0] + '-' + prize.rankRange[1]}</span>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-800 mb-1">${prize.title}</h3>
+                                    <ul class="space-y-1 mt-2">
+                                        ${prize.items.map(item => `
+                                            <li class="flex items-center gap-2 text-sm text-slate-600">
+                                                <i data-lucide="gift" class="w-4 h-4 text-purple-500"></i> ${item}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // === PROFILE VIEW (with Cat & Badges) ===
+        // ==========================================
+
+        function renderProfile(container) {
+            const cat = APP_STATE.cat;
+            const status = getUserStatus(APP_STATE.xp);
+            const nextStatus = STATUS_LEVELS[STATUS_LEVELS.indexOf(status) + 1];
+            const earnedBadges = getEarnedBadges();
+            const myUser = DATA.leaderboard.find(u => u.id === 3);
+            const catImgSrc = getCatImageSrc();
+            const catMsg = getCatMessage();
+            const nextLvlReq = cat.level * 100;
+
+            // Calculate XP progress to next status
+            const xpProgress = nextStatus
+                ? ((APP_STATE.xp - status.minXP) / (nextStatus.minXP - status.minXP)) * 100
+                : 100;
+
+            // Completed missions count
+            const completedMissions = APP_STATE.quests.reduce((acc, stage) =>
+                acc + stage.missions.filter(m => m.isCompleted).length, 0);
+            const totalMissions = APP_STATE.quests.reduce((acc, stage) =>
+                acc + stage.missions.length, 0);
+
+            const statBar = (label, val, icon, color) => `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 ${color} bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i data-lucide="${icon}" class="w-4 h-4 ${color.replace('bg-', 'text-')}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="font-medium text-slate-600">${label}</span>
+                            <span class="font-bold text-slate-800">${val}%</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full ${color} transition-all duration-500" style="width: ${val}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            let html = `
+                <div class="animate-fade-in max-w-5xl mx-auto pb-20">
+
+                    <header class="text-center mb-8">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-1">Мій Профіль</h2>
+                        <p class="text-slate-500 text-sm">Ваш особистий кабінет та прогрес</p>
+                    </header>
+
+                    <!-- TOP STATS ROW -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center">
+                            <p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Статус</p>
+                            <p class="text-lg font-black ${status.color} inline-block px-3 py-1 rounded-full">${status.emoji} ${status.name}</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center">
+                            <p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Рейтинг</p>
+                            <p class="text-2xl font-black text-emerald-600">#${myUser.rank}</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center">
+                            <p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Завдань</p>
+                            <p class="text-2xl font-black text-slate-800">${completedMissions}/${totalMissions}</p>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center">
+                            <p class="text-[10px] font-bold uppercase text-slate-400 mb-1">Бейджі</p>
+                            <p class="text-2xl font-black text-purple-600">${earnedBadges.length}/${BADGES.length}</p>
+                        </div>
+                    </div>
+
+                    <!-- MAIN LAYOUT: 2 COLUMNS on Desktop -->
+                    <div class="flex flex-col lg:flex-row gap-8">
+
+                        <!-- LEFT: Cat Partner -->
+                        <div class="w-full lg:w-1/2">
+                            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm h-full">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                            <i data-lucide="cat" class="w-5 h-5 text-amber-500"></i> Мій Партнер
+                                        </h3>
+                                        <p class="text-xs text-slate-500">Віртуальний асистент, що росте разом з вашим бізнесом</p>
+                                    </div>
+                                    <div class="bg-amber-50 px-3 py-1 rounded-lg font-bold text-amber-700 text-sm">
+                                        💰 ${cat.coins}
+                                    </div>
+                                </div>
+
+                                <!-- Cat Visual -->
+                                <div class="bg-gradient-to-b from-slate-50 to-white rounded-2xl p-6 mb-4 text-center relative">
+                                    <div class="inline-block bg-slate-100 px-3 py-1 rounded-lg rounded-bl-none text-xs font-bold text-slate-600 mb-4 animate-bounce">
+                                        ${catMsg}
+                                    </div>
+                                    <div class="animate-float cursor-pointer select-none" onclick="petCat()">
+                                        <img src="${catImgSrc}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616430.png'" alt="Cat" class="w-32 h-32 mx-auto object-contain drop-shadow-lg transition-all hover:scale-110">
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Рівень ${cat.level}</span>
+                                    </div>
+                                    <!-- XP Bar -->
+                                    <div class="mt-3 max-w-[200px] mx-auto">
+                                        <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                                            <span>XP</span>
+                                            <span>${cat.xp}/${nextLvlReq}</span>
+                                        </div>
+                                        <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-indigo-500" style="width: ${(cat.xp/nextLvlReq)*100}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cat Stats -->
+                                <div class="space-y-3 mb-4">
+                                    ${statBar('Здоров\'я', cat.stats.health, 'heart', 'bg-red-500')}
+                                    ${statBar('Енергія', cat.stats.energy, 'battery-charging', 'bg-emerald-500')}
+                                    ${statBar('Настрій', cat.stats.mood, 'smile', 'bg-amber-500')}
+                                    ${statBar('Знання', cat.stats.knowledge, 'book-open', 'bg-blue-500')}
+                                </div>
+
+                                <!-- Cat Actions -->
+                                <div class="grid grid-cols-4 gap-2">
+                                    <button onclick="openGameShop()" class="bg-amber-50 hover:bg-amber-100 p-3 rounded-xl flex flex-col items-center gap-1 transition-colors">
+                                        <span class="text-lg">🛒</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Магазин</span>
+                                    </button>
+                                    <button onclick="openMiniGame()" class="bg-blue-50 hover:bg-blue-100 p-3 rounded-xl flex flex-col items-center gap-1 transition-colors">
+                                        <span class="text-lg">🎮</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Грати</span>
+                                    </button>
+                                    <button onclick="trainCat()" class="bg-purple-50 hover:bg-purple-100 p-3 rounded-xl flex flex-col items-center gap-1 transition-colors">
+                                        <span class="text-lg">📚</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Вчити</span>
+                                    </button>
+                                    <button onclick="workCat()" class="bg-emerald-50 hover:bg-emerald-100 p-3 rounded-xl flex flex-col items-center gap-1 transition-colors">
+                                        <span class="text-lg">💼</span>
+                                        <span class="text-[10px] font-bold text-slate-600">Робота</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT: Status & Badges -->
+                        <div class="w-full lg:w-1/2 space-y-6">
+
+                            <!-- Status Progress -->
+                            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                    <i data-lucide="trending-up" class="w-5 h-5 text-emerald-500"></i> Прогрес Статусу
+                                </h3>
+
+                                <div class="flex items-center gap-4 mb-4">
+                                    <div class="w-16 h-16 ${status.color} rounded-2xl flex items-center justify-center text-3xl">
+                                        ${status.emoji}
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-slate-800">${status.name}</p>
+                                        <p class="text-xs text-slate-500">${status.privileges}</p>
+                                        ${nextStatus ? `
+                                            <div class="mt-2">
+                                                <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                                                    <span>До "${nextStatus.name}"</span>
+                                                    <span>${APP_STATE.xp}/${nextStatus.minXP} XP</span>
+                                                </div>
+                                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div class="h-full quest-gradient transition-all" style="width: ${xpProgress}%"></div>
+                                                </div>
+                                            </div>
+                                        ` : '<p class="text-xs text-emerald-600 font-bold mt-2">Максимальний рівень!</p>'}
+                                    </div>
+                                </div>
+
+                                <!-- All Statuses Preview -->
+                                <div class="flex gap-2 flex-wrap">
+                                    ${STATUS_LEVELS.map(s => `
+                                        <div class="text-center ${APP_STATE.xp >= s.minXP ? 'opacity-100' : 'opacity-40'}">
+                                            <div class="w-10 h-10 ${s.color} rounded-xl flex items-center justify-center text-lg mx-auto mb-1 ${s.id === status.id ? 'ring-2 ring-emerald-500 ring-offset-2' : ''}">
+                                                ${s.emoji}
+                                            </div>
+                                            <p class="text-[9px] font-bold text-slate-500">${s.minXP}+</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Badges Collection -->
+                            <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                                <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                    <i data-lucide="award" class="w-5 h-5 text-purple-500"></i> Колекція Бейджів
+                                </h3>
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    ${BADGES.map(badge => {
+                                        const earned = badge.condition(APP_STATE);
+                                        return `
+                                            <div class="p-3 rounded-xl border ${earned ? badge.color + ' border-current/20' : 'bg-slate-50 border-slate-100 opacity-50'} transition-all">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 ${earned ? badge.color : 'bg-slate-200 text-slate-400'} rounded-xl flex items-center justify-center">
+                                                        <i data-lucide="${badge.icon}" class="w-5 h-5"></i>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="font-bold text-sm ${earned ? 'text-slate-800' : 'text-slate-400'} truncate">${badge.name}</p>
+                                                        <p class="text-[10px] ${earned ? 'text-slate-600' : 'text-slate-400'} truncate">${badge.description}</p>
+                                                    </div>
+                                                    ${earned ? '<i data-lucide="check-circle" class="w-4 h-4 text-emerald-500 flex-shrink-0"></i>' : '<i data-lucide="lock" class="w-4 h-4 text-slate-300 flex-shrink-0"></i>'}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.classList.toggle('hidden');
+            if(!modal.classList.contains('hidden')) {
+                const input = document.getElementById('api-key-input');
+                const status = document.getElementById('api-key-status');
+                const btn = document.getElementById('save-settings-btn');
+                if(typeof window !== 'undefined' && window.GEMINI_API_KEY) {
+                    input.value = "**************************";
+                    input.disabled = true;
+                    status.innerText = "Ключ безпечно завантажено через Netlify (Snippet Injection).";
+                    status.classList.add("text-emerald-600", "font-bold");
+                    btn.disabled = true;
+                    btn.classList.add("opacity-50", "cursor-not-allowed");
+                } else {
+                    input.value = APP_STATE.apiKey;
+                }
+            }
+        }
+
+        function saveSettings() {
+            if(typeof window !== 'undefined' && window.GEMINI_API_KEY) return;
+            const key = document.getElementById('api-key-input').value.trim();
+            APP_STATE.apiKey = key;
+            localStorage.setItem('gemini_api_key', key);
+            toggleSettingsModal();
+            showToast("API ключ збережено!");
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
