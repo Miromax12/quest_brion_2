@@ -137,7 +137,16 @@
             <span class="font-black text-lg tracking-tight text-slate-900">BRIONEL<span class="text-emerald-500">Quest</span></span>
         </div>
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-4 md:gap-6">
+            <!-- Cat Badge -->
+            <div onclick="switchView('profile')" class="flex items-center gap-2 bg-amber-50 px-2 py-1 rounded-xl border border-amber-200 cursor-pointer hover:bg-amber-100 transition-colors" title="Мій Партнер">
+                <img id="header-cat-img" src="img/cat_1.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616430.png'" alt="Cat" class="w-8 h-8 object-contain">
+                <div class="hidden md:block text-right">
+                    <p class="text-[10px] uppercase font-bold text-amber-600 tracking-wider">Партнер</p>
+                    <p class="text-xs font-black text-amber-700 leading-none" id="header-cat-level">Lvl 1</p>
+                </div>
+            </div>
+
             <!-- XP Display -->
             <div class="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                 <div class="text-right hidden md:block">
@@ -653,6 +662,7 @@
             lucide.createIcons();
             recalcRank(); // Calculate initial rank
             updateXPDisplay();
+            updateHeaderCat(); // Update cat badge in header
             switchView('dashboard');
             // Simulate cat decay on init
             processCatDecay();
@@ -714,6 +724,17 @@
 
         function updateXPDisplay() {
             document.getElementById('user-xp-display').innerText = `${APP_STATE.xp} XP`;
+        }
+
+        function updateHeaderCat() {
+            const catImg = document.getElementById('header-cat-img');
+            const catLevel = document.getElementById('header-cat-level');
+            if (catImg) {
+                catImg.src = getCatImageSrc();
+            }
+            if (catLevel) {
+                catLevel.innerText = `Lvl ${APP_STATE.cat.level}`;
+            }
         }
 
         function showToast(message, isError = false) {
@@ -866,6 +887,7 @@
             // For demo, we just simulate small decay
             APP_STATE.cat.stats.energy = Math.max(0, APP_STATE.cat.stats.energy - 5);
             APP_STATE.cat.stats.mood = Math.max(0, APP_STATE.cat.stats.mood - 2);
+            updateHeaderCat(); // Update cat badge after decay
         }
 
         function updateCatStats(changes) {
@@ -887,16 +909,24 @@
                 }
             }
             saveState(); // Persist cat state changes
+            updateHeaderCat(); // Update cat badge in header
         }
 
         function getCatImageSrc() {
             const cat = APP_STATE.cat;
-            // NEW LOGIC: Sad cat if stats < 30%
-            if (cat.stats.energy < 30 || cat.stats.mood < 30) return 'img/sad_cat.png';
-            
-            if (cat.level >= 5) return 'img/5_cat.png';
-            if (cat.level >= 3) return 'img/3_cat.png';
-            return 'img/cat.png';
+            const isSad = cat.stats.energy < 30 || cat.stats.mood < 30;
+
+            // Determine cat tier based on level
+            // Level 1-4: cat_1, Level 5-9: cat_2, Level 10+: cat_3
+            let tier = 1;
+            if (cat.level >= 10) tier = 3;
+            else if (cat.level >= 5) tier = 2;
+
+            // Return appropriate image
+            if (isSad) {
+                return `img/cat_${tier}_sad.png`;
+            }
+            return `img/cat_${tier}.png`;
         }
 
         function getCatMessage() {
@@ -2310,7 +2340,7 @@
                                     <div class="inline-block bg-slate-100 px-3 py-1 rounded-lg rounded-bl-none text-xs font-bold text-slate-600 mb-4 animate-bounce">
                                         ${catMsg}
                                     </div>
-                                    <div class="animate-float cursor-pointer select-none" onclick="petCat()">
+                                    <div class="cursor-pointer select-none hover:scale-105 transition-transform" onclick="petCat()">
                                         <img src="${catImgSrc}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/616/616430.png'" alt="Cat" class="w-32 h-32 mx-auto object-contain drop-shadow-lg transition-all hover:scale-110">
                                     </div>
                                     <div class="mt-4 text-center">
